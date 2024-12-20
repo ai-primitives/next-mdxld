@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { type ReactNode } from 'react'
 import { useMemo } from 'react'
 
 interface ComponentMap {
@@ -6,7 +6,7 @@ interface ComponentMap {
 }
 
 interface WrapperProps {
-  children: React.ReactNode
+  children: ReactNode
 }
 
 /**
@@ -32,7 +32,7 @@ export function resolveComponent(type: string | undefined, components: Component
 export function useComponents(type: string | undefined, baseComponents: ComponentMap): ComponentMap {
   return useMemo(() => {
     const TypeComponent = resolveComponent(type, baseComponents)
-    const DefaultWrapper: React.FC<WrapperProps> = ({ children }) => <>{children}</>
+    const DefaultWrapper = ({ children }: WrapperProps) => React.createElement(React.Fragment, null, children)
     return {
       ...baseComponents,
       wrapper: TypeComponent || baseComponents.wrapper || DefaultWrapper
