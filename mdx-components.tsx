@@ -1,20 +1,16 @@
 import React from 'react'
-import type { ComponentType, ReactNode } from 'react'
-import { useMDXComponents as baseUseMDXComponents } from '@mdx-js/react'
+import type { MDXComponents } from 'mdx/types'
+import { defaultLayouts } from './layouts'
 
-interface WrapperProps {
-  children: ReactNode
-  frontmatter?: Record<string, unknown>
-}
-
-export function useMDXComponents(components: Record<string, ComponentType<any>>) {
+export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
-    ...baseUseMDXComponents(components),
-    // Add custom components here
-    wrapper: ({ children, frontmatter }: WrapperProps) => (
-      <article className="prose dark:prose-invert max-w-none">
-        {children}
-      </article>
-    )
+    wrapper: ({ children, frontmatter }) => {
+      const Layout = frontmatter?.$type ?
+        defaultLayouts[frontmatter.$type] || defaultLayouts.default :
+        defaultLayouts.default
+
+      return <Layout frontmatter={frontmatter}>{children}</Layout>
+    },
+    ...components
   }
 }
