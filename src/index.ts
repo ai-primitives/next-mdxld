@@ -1,6 +1,6 @@
 import type { NextConfig } from 'next'
 import type { Configuration as WebpackConfig } from 'webpack'
-import { remarkMdxld } from 'remark-mdxld'
+import remarkMdxld from 'remark-mdxld'
 
 interface WithMdxldOptions {
   urlImports?: {
