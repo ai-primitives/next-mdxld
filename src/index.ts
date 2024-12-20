@@ -2,25 +2,44 @@ import type { NextConfig } from 'next'
 import type { Configuration as WebpackConfig } from 'webpack'
 import type { WebpackConfigContext } from 'next/dist/server/config-shared'
 import remarkMdxld from 'remark-mdxld'
+import remarkGfm from 'remark-gfm'
+import { resolveComponent, type ComponentResolutionOptions } from './components'
+import { resolveLayout, type LayoutResolutionOptions } from './layouts'
+import { resolveURLImports, createImportAliases, type MDXLDConfig } from './config'
+import { useMDXComponents } from './hooks'
 
-interface WithMdxldOptions {
-  urlImports?: {
-    domains?: string[]
-    importMap?: Record<string, string>
-  }
-}
-
-const withMdxld = (nextConfig: NextConfig & WithMdxldOptions = {}) => {
+const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
   return {
     ...nextConfig,
+    experimental: {
+      ...nextConfig.experimental,
+      urlImports: {
+        ...nextConfig.experimental?.urlImports,
+        domains: [
+          'esm.sh', 'cdn.skypack.dev', 'unpkg.com',
+          ...(nextConfig.urlImports?.domains || [])
+        ]
+      }
+    },
     webpack: (config: WebpackConfig, options: WebpackConfigContext): WebpackConfig => {
       if (typeof nextConfig.webpack === 'function') {
         config = nextConfig.webpack(config, options)
       }
 
+      // Configure URL imports
+      const urlImports = resolveURLImports(nextConfig.urlImports)
+
+      // Add trusted domains to webpack config
+      config.resolve = config.resolve || {}
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        ...(urlImports && createImportAliases(urlImports))
+      }
+
       config.module = config.module || {}
       config.module.rules = config.module.rules || []
 
+      // Add MDX loader configuration
       config.module.rules.push({
         test: /\.mdx?$/,
         use: [
@@ -28,13 +47,17 @@ const withMdxld = (nextConfig: NextConfig & WithMdxldOptions = {}) => {
           {
             loader: '@mdx-js/loader',
             options: {
-              remarkPlugins: [remarkMdxld],
+              remarkPlugins: [
+                remarkGfm,
+                remarkMdxld
+              ],
               providerImportSource: '@mdx-js/react'
             }
           }
         ]
       })
 
+      // Add URL loader for remote imports
       config.module.rules.push({
         test: /^https?:\/\//,
         loader: 'url-loader',
@@ -51,4 +74,5 @@ const withMdxld = (nextConfig: NextConfig & WithMdxldOptions = {}) => {
 }
 
 export default withMdxld
-export type { WithMdxldOptions }
+export { resolveComponent, resolveLayout, useMDXComponents }
+export type { MDXLDConfig, ComponentResolutionOptions, LayoutResolutionOptions }

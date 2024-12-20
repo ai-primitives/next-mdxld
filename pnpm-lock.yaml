@@ -8,15 +8,21 @@ importers:
 
   .:
     dependencies:
+      '@mdx-js/loader':
+        specifier: ^3.1.0
+        version: 3.1.0(acorn@8.14.0)(webpack@5.97.1)
+      '@mdx-js/react':
+        specifier: ^3.1.0
+        version: 3.1.0(@types/react@18.3.18)(react@18.3.1)
       mdxld:
-        specifier: ^0.1.0
+        specifier: ^0.1.2
         version: 0.1.2(web-streams-polyfill@3.3.3)
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.0
       remark-mdx-frontmatter:
-        specifier: ^4.0.0
-        version: 4.0.0
+        specifier: ^5.0.0
+        version: 5.0.0
       remark-mdxld:
         specifier: ^0.1.0
         version: 0.1.0(@mdx-js/mdx@3.1.0(acorn@8.14.0))
@@ -24,12 +30,6 @@ importers:
       '@eslint/js':
         specifier: ^9.17.0
         version: 9.17.0
-      '@mdx-js/loader':
-        specifier: ^3.1.0
-        version: 3.1.0(acorn@8.14.0)(webpack@5.97.1)
-      '@mdx-js/react':
-        specifier: ^3.1.0
-        version: 3.1.0(@types/react@18.3.18)(react@18.3.1)
       '@next/mdx':
         specifier: ^14.2.21
         version: 14.2.21(@mdx-js/loader@3.1.0(acorn@8.14.0)(webpack@5.97.1))(@mdx-js/react@3.1.0(@types/react@18.3.18)(react@18.3.1))
@@ -102,6 +102,9 @@ importers:
       vitest:
         specifier: ^2.1.8
         version: 2.1.8(@types/node@22.10.2)(terser@5.37.0)
+      webpack:
+        specifier: ^5.97.1
+        version: 5.97.1
 
   examples/api:
     dependencies:
@@ -2571,8 +2574,8 @@ packages:
   remark-gfm@4.0.0:
     resolution: {integrity: sha512-U92vJgBPkbw4Zfu/IiW2oTZLSL3Zpv+uI7My2eq8JxKgqraFdU8YUGicEJCEgSbeaG+QDFqIcwwfMTOEelPxuA==}
 
-  remark-mdx-frontmatter@4.0.0:
-    resolution: {integrity: sha512-PZzAiDGOEfv1Ua7exQ8S5kKxkD8CDaSb4nM+1Mprs6u8dyvQifakh+kCj6NovfGXW+bTvrhjaR3srzjS2qJHKg==}
+  remark-mdx-frontmatter@5.0.0:
+    resolution: {integrity: sha512-kI75pshe27TM71R+0iX7C3p4MbGMdygkvSbrk1WYSar88WAwR2JfQilofcDGgDNFAWUo5IwTPyq9XvGpifTwqQ==}
 
   remark-mdx@3.1.0:
     resolution: {integrity: sha512-Ngl/H3YXyBV9RcRNdlYsZujAmhsxwzxpDzpDEhFBVAGthS4GDgnctpDjgFl/ULx5UEDzqtW1cyBSNKqYYrqLBA==}
@@ -5886,7 +5889,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-mdx-frontmatter@4.0.0:
+  remark-mdx-frontmatter@5.0.0:
     dependencies:
       '@types/mdast': 4.0.4
       estree-util-is-identifier-name: 3.0.0
