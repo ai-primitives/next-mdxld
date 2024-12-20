@@ -7,16 +7,32 @@ settings:
 importers:
 
   .:
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.17.0
-        version: 9.17.0
+    dependencies:
       '@mdx-js/loader':
         specifier: ^3.1.0
         version: 3.1.0(acorn@8.14.0)(webpack@5.97.1)
       '@mdx-js/react':
         specifier: ^3.1.0
         version: 3.1.0(@types/react@18.3.18)(react@18.3.1)
+      mdxld:
+        specifier: ^0.1.2
+        version: 0.1.2(web-streams-polyfill@3.3.3)
+      react:
+        specifier: '>=17.0.0'
+        version: 18.3.1
+      react-dom:
+        specifier: '>=17.0.0'
+        version: 18.3.1(react@18.3.1)
+      remark-gfm:
+        specifier: ^4.0.0
+        version: 4.0.0
+      remark-mdx-frontmatter:
+        specifier: ^5.0.0
+        version: 5.0.0
+    devDependencies:
+      '@eslint/js':
+        specifier: ^9.17.0
+        version: 9.17.0
       '@semantic-release/commit-analyzer':
         specifier: ^13.0.0
         version: 13.0.0(semantic-release@24.2.0(typescript@5.7.2))
@@ -47,21 +63,12 @@ importers:
       eslint:
         specifier: ^9.17.0
         version: 9.17.0
-      mdxld:
-        specifier: ^0.1.2
-        version: 0.1.2(web-streams-polyfill@3.3.3)
       next:
         specifier: ^14.0.0
         version: 14.2.21(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       prettier:
         specifier: ^3.4.2
         version: 3.4.2
-      remark-gfm:
-        specifier: ^4.0.0
-        version: 4.0.0
-      remark-mdx-frontmatter:
-        specifier: ^5.0.0
-        version: 5.0.0
       semantic-release:
         specifier: ^24.2.0
         version: 24.2.0(typescript@5.7.2)

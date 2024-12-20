@@ -19,6 +19,14 @@ interface MDXLDConfig extends NextConfig {
 export function withMDXLD(nextConfig: MDXLDConfig = {}) {
   return {
     ...nextConfig,
+    experimental: {
+      ...nextConfig.experimental,
+      urlImports: {
+        // Default trusted domains for URL imports
+        domains: ['esm.sh', 'cdn.skypack.dev', 'unpkg.com'],
+        ...nextConfig.urlImports?.domains && { domains: nextConfig.urlImports.domains }
+      }
+    },
     webpack: (config: Configuration, options: WebpackConfigContext) => {
       if (typeof nextConfig.webpack === 'function') {
         config = nextConfig.webpack(config, options)
@@ -65,5 +73,6 @@ export function withMDXLD(nextConfig: MDXLDConfig = {}) {
     }
   }
 }
+
 export { resolveComponent, resolveLayout, useMDXComponents }
 export type { ComponentResolutionOptions, LayoutResolutionOptions, MDXLDConfig, URLImportsConfig, MDXFrontmatter, MDXComponents }
