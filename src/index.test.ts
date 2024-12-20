@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { withMDXLD, type MDXLDConfig } from './index'
 import type { Configuration } from 'webpack'
-import type { WebpackConfigContext } from 'next/dist/server/config-shared'
 
 describe('withMDXLD', () => {
   it('should return a valid Next.js config object', () => {
