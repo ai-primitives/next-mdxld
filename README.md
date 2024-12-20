@@ -1,68 +1,166 @@
-# @ai-primitives/package-template
+# next-mdxld
 
-[![npm version](https://badge.fury.io/js/%40ai-primitives%2Fpackage-template.svg)](https://www.npmjs.com/package/@ai-primitives/package-template)
+[![npm version](https://badge.fury.io/js/next-mdxld.svg)](https://www.npmjs.com/package/next-mdxld)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A modern TypeScript package template with Vitest, Prettier, ESLint, and semantic versioning.
+A NextJS plugin for MDXLD (MDX with YAML Linked Data frontmatter) that enables component and layout selection based on frontmatter $context and $type.
+
+## Quick Start
+
+```mdx
+export layout from 'https://esm.sh/@mdxui/blog/simple'
+export components from 'https://esm.sh/@mdxui/shadcn'
+
+# My Blog Post
+
+This content will use the simple blog layout and shadcn components.
+```
 
 ## Features
 
-- 🚀 TypeScript for type safety and modern JavaScript features
-- ⚡️ Vitest for fast, modern testing
-- 🎨 Prettier for consistent code formatting
-- 🔍 ESLint for code quality
-- 📦 Semantic versioning with automated releases
-- 🔄 GitHub Actions for CI/CD
+- 🚀 NextJS App Router Support
+- 📄 MDXLD Frontmatter Processing
+- 🎨 Dynamic Component Selection via $type
+- 📱 Flexible Layout System via $context
+- 🔄 Automatic Page Generation
+- 🎯 TypeScript Support
 
 ## Installation
 
 ```bash
-pnpm add @ai-primitives/package-template
+pnpm add next-mdxld
 ```
 
 ## Usage
 
-```typescript
-import { add } from '@ai-primitives/package-template'
+### 1. Configure next.config.js
 
-const result = add(1, 2) // returns 3
+```javascript
+import { withMDXLD } from 'next-mdxld'
+
+const config = withMDXLD({
+  contentDirBasePath: '/',
+  // Enable URL imports for components and layouts
+  urlImports: true,
+  components: {
+    // Schema.org components
+    'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/blog/components',
+    'https://schema.org/WebSite': 'https://esm.sh/@mdxui/site/components',
+    // mdx.org.ai components
+    'https://mdx.org.ai/API': 'https://esm.sh/@mdxui/api/components',
+    'https://mdx.org.ai/Agent': 'https://esm.sh/@mdxui/agent/components'
+  },
+  layouts: {
+    // Your layout mappings
+    Blog: 'https://esm.sh/@mdxui/blog/layouts/default',
+    API: 'https://esm.sh/@mdxui/api/layouts/default'
+  }
+})
+
+export default config
 ```
 
-## Development
+### 2. Set up MDX Components
 
-```bash
-# Install dependencies
-pnpm install
+```javascript
+import { useMDXComponents } from 'next-mdxld/components'
 
-# Run tests
-pnpm test
-
-# Run tests in watch mode
-pnpm test:watch
-
-# Build the package
-pnpm build
-
-# Lint the code
-pnpm lint
-
-# Format the code
-pnpm format
+export function MDXComponents(components) {
+  return {
+    ...useMDXComponents(),
+    ...components
+  }
+}
 ```
+
+### 3. Create App Layout
+
+```javascript
+import { Layout } from 'next-mdxld/components'
+
+export default function RootLayout({ children }) {
+  return (
+    <Layout>
+      {children}
+    </Layout>
+  )
+}
+```
+
+### 4. Set up Dynamic Page Route
+
+```javascript
+import { MDXPage } from 'next-mdxld/page'
+
+export default MDXPage
+```
+
+### Example MDX Files
+
+#### Schema.org BlogPosting
+```mdx
+---
+$type: https://schema.org/BlogPosting
+$context: Blog
+title: My Technical Blog Post
+author: John Doe
+datePublished: 2024-01-15
+---
+
+# Advanced TypeScript Patterns
+
+This content will be rendered using the BlogPosting component within the Blog layout.
+```
+
+#### Schema.org WebSite
+```mdx
+---
+$type: https://schema.org/WebSite
+$context: Site
+name: My Developer Portfolio
+url: https://example.com
+---
+
+# Welcome to My Portfolio
+
+This content uses the WebSite component for optimal SEO and structure.
+```
+
+#### mdx.org.ai API
+```mdx
+---
+$type: https://mdx.org.ai/API
+$context: API
+endpoint: /api/users
+method: POST
+---
+
+# Create User API
+
+This content will be rendered with API-specific components and documentation layout.
+```
+
+#### mdx.org.ai Agent
+```mdx
+---
+$type: https://mdx.org.ai/Agent
+$context: Agent
+capabilities: ["chat", "search", "code"]
+---
+
+# Support Agent
+
+This content will be rendered with Agent-specific components and interaction UI.
+```
+
+## Documentation
+
+For detailed documentation, visit [mdxld.org](https://mdxld.org)
 
 ## Contributing
 
-Please read our [Contributing Guide](./CONTRIBUTING.md) to learn about our development process and how to propose bugfixes and improvements.
+Please read our [Contributing Guide](./CONTRIBUTING.md) to learn about our development process.
 
 ## License
 
-MIT © [AI Primitives](https://mdx.org.ai)
-
-## Dependencies
-
-This package uses the following key dependencies:
-
-- TypeScript for static typing
-- Vitest for testing
-- ESLint for linting
-- Prettier for code formatting
+MIT © [AI Primitives](https://primitives.org.ai)

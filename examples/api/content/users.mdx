@@ -1,0 +1,35 @@
+export layout from 'https://esm.sh/@mdxui/api/simple'
+export components from 'https://esm.sh/@mdxui/api/components'
+
+---
+$type: https://mdx.org.ai/API
+$context: API
+endpoint: /api/users
+method: POST
+---
+
+# Create User API
+
+This endpoint creates a new user in the system.
+
+## Request Body
+
+```typescript
+{
+  name: string;
+  email: string;
+  role?: 'user' | 'admin';
+}
+```
+
+## Response
+
+```typescript
+{
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  createdAt: string;
+}
+```
