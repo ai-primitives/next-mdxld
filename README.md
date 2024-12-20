@@ -101,7 +101,6 @@ export default MDXPage
 ```mdx
 ---
 $type: https://schema.org/BlogPosting
-$context: Blog
 title: My Technical Blog Post
 author: John Doe
 datePublished: 2024-01-15
@@ -116,7 +115,6 @@ This content will be rendered using the BlogPosting component within the Blog la
 ```mdx
 ---
 $type: https://schema.org/WebSite
-$context: Site
 name: My Developer Portfolio
 url: https://example.com
 ---
@@ -130,7 +128,6 @@ This content uses the WebSite component for optimal SEO and structure.
 ```mdx
 ---
 $type: https://mdx.org.ai/API
-$context: API
 endpoint: /api/users
 method: POST
 ---
@@ -144,8 +141,7 @@ This content will be rendered with API-specific components and documentation lay
 ```mdx
 ---
 $type: https://mdx.org.ai/Agent
-$context: Agent
-capabilities: ["chat", "search", "code"]
+tools: ["chat", "search", "code"]
 ---
 
 # Support Agent
