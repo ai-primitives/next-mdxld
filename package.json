@@ -38,6 +38,11 @@
   "bugs": {
     "url": "https://github.com/ai-primitives/next-mdxld/issues"
   },
+  "peerDependencies": {
+    "next": "^13.0.0 || ^14.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
   "dependencies": {
     "mdxld": "^0.1.0",
     "remark-gfm": "^4.0.0",
