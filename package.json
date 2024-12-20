@@ -55,9 +55,11 @@
     "@semantic-release/release-notes-generator": "^14.0.1",
     "@tailwindcss/typography": "^0.5.15",
     "@types/mdx": "^2.0.13",
+    "@types/next": "^9.0.0",
     "@types/node": "^22.10.2",
     "@types/react": "^18.2.0",
     "@types/react-dom": "^18.2.0",
+    "@types/webpack": "^5.28.5",
     "@typescript-eslint/eslint-plugin": "^8.18.0",
     "@typescript-eslint/parser": "^8.18.0",
     "autoprefixer": "^10.4.20",
@@ -69,4 +71,3 @@
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   }
-}
