@@ -1,22 +1,14 @@
-import React, { ReactNode } from 'react'
-import type { ComponentType } from 'react'
+import React from 'react'
+import type { MDXProps } from 'mdx/types'
 
-interface DefaultLayoutProps {
-  children: ReactNode
-  frontmatter: {
-    $type?: string
-    $context?: string
-    [key: string]: any
-  }
-  components?: {
-    [key: string]: ComponentType<any>
-  }
+export interface DefaultLayoutProps extends MDXProps {
+  frontmatter: Record<string, any>
+  children: React.ReactNode
 }
 
 export const DefaultLayout: React.FC<DefaultLayoutProps> = ({
   children,
-  frontmatter,
-  components
+  frontmatter
 }) => {
   return (
     <article className="prose dark:prose-invert max-w-none">
