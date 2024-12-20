@@ -1,9 +1,20 @@
-# @ai-primitives/next-mdxld
+# next-mdxld
 
-[![npm version](https://badge.fury.io/js/%40ai-primitives%2Fnext-mdxld.svg)](https://www.npmjs.com/package/@ai-primitives/next-mdxld)
+[![npm version](https://badge.fury.io/js/next-mdxld.svg)](https://www.npmjs.com/package/next-mdxld)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A NextJS plugin for MDXLD (MDX with YAML Linked Data frontmatter) that enables component and layout selection based on frontmatter $context and $type.
+
+## Quick Start
+
+```mdx
+export layout from 'https://esm.sh/@mdxui/blog/simple'
+export components from 'https://esm.sh/@mdxui/shadcn'
+
+# My Blog Post
+
+This content will use the simple blog layout and shadcn components.
+```
 
 ## Features
 
@@ -17,7 +28,7 @@ A NextJS plugin for MDXLD (MDX with YAML Linked Data frontmatter) that enables c
 ## Installation
 
 ```bash
-pnpm add @ai-primitives/next-mdxld
+pnpm add next-mdxld
 ```
 
 ## Usage
@@ -25,15 +36,24 @@ pnpm add @ai-primitives/next-mdxld
 ### 1. Configure next.config.js
 
 ```javascript
-import { withMDXLD } from '@ai-primitives/next-mdxld'
+import { withMDXLD } from 'next-mdxld'
 
 const config = withMDXLD({
   contentDirBasePath: '/',
+  // Enable URL imports for components and layouts
+  urlImports: true,
   components: {
-    // Your component mappings
+    // Schema.org components
+    'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/blog/components',
+    'https://schema.org/WebSite': 'https://esm.sh/@mdxui/site/components',
+    // mdx.org.ai components
+    'https://mdx.org.ai/API': 'https://esm.sh/@mdxui/api/components',
+    'https://mdx.org.ai/Agent': 'https://esm.sh/@mdxui/agent/components'
   },
   layouts: {
     // Your layout mappings
+    Blog: 'https://esm.sh/@mdxui/blog/layouts/default',
+    API: 'https://esm.sh/@mdxui/api/layouts/default'
   }
 })
 
@@ -43,7 +63,7 @@ export default config
 ### 2. Set up MDX Components
 
 ```javascript
-import { useMDXComponents } from '@ai-primitives/next-mdxld/components'
+import { useMDXComponents } from 'next-mdxld/components'
 
 export function MDXComponents(components) {
   return {
@@ -56,7 +76,7 @@ export function MDXComponents(components) {
 ### 3. Create App Layout
 
 ```javascript
-import { Layout } from '@ai-primitives/next-mdxld/components'
+import { Layout } from 'next-mdxld/components'
 
 export default function RootLayout({ children }) {
   return (
@@ -70,23 +90,67 @@ export default function RootLayout({ children }) {
 ### 4. Set up Dynamic Page Route
 
 ```javascript
-import { MDXPage } from '@ai-primitives/next-mdxld/page'
+import { MDXPage } from 'next-mdxld/page'
 
 export default MDXPage
 ```
 
-### Example MDX File
+### Example MDX Files
 
+#### Schema.org BlogPosting
 ```mdx
 ---
-$type: BlogPost
-$context: BlogLayout
-title: My First Post
+$type: https://schema.org/BlogPosting
+$context: Blog
+title: My Technical Blog Post
+author: John Doe
+datePublished: 2024-01-15
 ---
 
-# Welcome to My Blog
+# Advanced TypeScript Patterns
 
-This content will be rendered using the BlogPost component within the BlogLayout.
+This content will be rendered using the BlogPosting component within the Blog layout.
+```
+
+#### Schema.org WebSite
+```mdx
+---
+$type: https://schema.org/WebSite
+$context: Site
+name: My Developer Portfolio
+url: https://example.com
+---
+
+# Welcome to My Portfolio
+
+This content uses the WebSite component for optimal SEO and structure.
+```
+
+#### mdx.org.ai API
+```mdx
+---
+$type: https://mdx.org.ai/API
+$context: API
+endpoint: /api/users
+method: POST
+---
+
+# Create User API
+
+This content will be rendered with API-specific components and documentation layout.
+```
+
+#### mdx.org.ai Agent
+```mdx
+---
+$type: https://mdx.org.ai/Agent
+$context: Agent
+capabilities: ["chat", "search", "code"]
+---
+
+# Support Agent
+
+This content will be rendered with Agent-specific components and interaction UI.
 ```
 
 ## Documentation
