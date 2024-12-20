@@ -15,7 +15,7 @@ describe('withMDXLD', () => {
 
   it('should preserve existing webpack config if present', () => {
     const baseConfig: MDXLDConfig = {
-      webpack: (config: Configuration, options: WebpackConfigContext): Configuration => {
+      webpack: (config: Configuration): Configuration => {
         config.resolve = config.resolve || {}
         config.resolve.alias = { '@test': './test' }
         return config
