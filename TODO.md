@@ -1,44 +1,70 @@
-# Project Status and Tasks
+# Project Tasks
 
-## Setup and Configuration
+## Core Implementation
 
-- [x] Initialize package with TypeScript configuration
-- [x] Set up Vitest for testing
-- [x] Configure ESLint and Prettier
-- [x] Set up basic project structure
-- [x] Create placeholder implementation and tests
-- [x] Configure package.json with proper metadata
+- [ ] Initial Setup
+  - [ ] Configure TypeScript
+  - [ ] Set up build process
+  - [ ] Configure testing environment
 
-## Implementation
-- [x] Basic package structure
-  - [x] TypeScript configuration
-  - [x] Testing setup with Vitest
-  - [x] ESLint and Prettier configuration
-- [x] CLI functionality
-  - [x] Basic command-line interface
-  - [x] Version and help commands
-- [ ] Advanced features
-  - [ ] Additional CLI commands
-  - [ ] Extended test coverage
-  - [ ] Documentation examples
+- [ ] NextJS Plugin Implementation
+  - [ ] Create withMDXLD plugin
+  - [ ] Implement configuration options
+  - [ ] Add contentDirBasePath support
+
+- [ ] MDXLD Integration
+  - [ ] Integrate mdxld parser
+  - [ ] Handle frontmatter processing
+  - [ ] Support $type and $context properties
+
+- [ ] Component System
+  - [ ] Create component resolution system
+  - [ ] Implement useMDXComponents hook
+  - [ ] Add dynamic component loading
+
+- [ ] Layout System
+  - [ ] Create layout resolution system
+  - [ ] Implement default layouts
+  - [ ] Support nested layouts
+
+- [ ] Page Generation
+  - [ ] Implement dynamic page routing
+  - [ ] Add metadata generation
+  - [ ] Support static site generation
 
 ## Documentation
 
-- [x] Create README with badges and usage instructions
-- [ ] Complete CONTRIBUTING.md guide
-- [ ] Add API documentation
-- [ ] Add examples directory with usage examples
+- [ ] API Documentation
+  - [ ] Plugin configuration
+  - [ ] Component system
+  - [ ] Layout system
+  - [ ] Page generation
 
-## CI/CD
+- [ ] Examples
+  - [ ] Basic documentation site
+  - [ ] Blog with custom components
+  - [ ] Multi-layout application
 
-- [ ] Set up GitHub Actions workflow
-- [ ] Configure semantic-release
-- [ ] Add test coverage reporting
-- [ ] Set up automated npm publishing
+## Testing
 
-## Future Enhancements
+- [ ] Unit Tests
+  - [ ] Parser integration
+  - [ ] Component resolution
+  - [ ] Layout system
 
-- [ ] Add more comprehensive examples
-- [ ] Add changelog generation
-- [ ] Add pull request template
-- [ ] Add issue templates
+- [ ] Integration Tests
+  - [ ] Full page generation
+  - [ ] Component rendering
+  - [ ] Layout application
+
+## Release
+
+- [ ] Package Configuration
+  - [ ] Update package.json
+  - [ ] Configure npm publishing
+  - [ ] Set up semantic release
+
+- [ ] CI/CD
+  - [ ] Set up GitHub Actions
+  - [ ] Configure test workflow
+  - [ ] Add release automation

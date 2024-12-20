@@ -1,68 +1,102 @@
-# @ai-primitives/package-template
+# @ai-primitives/next-mdxld
 
-[![npm version](https://badge.fury.io/js/%40ai-primitives%2Fpackage-template.svg)](https://www.npmjs.com/package/@ai-primitives/package-template)
+[![npm version](https://badge.fury.io/js/%40ai-primitives%2Fnext-mdxld.svg)](https://www.npmjs.com/package/@ai-primitives/next-mdxld)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-A modern TypeScript package template with Vitest, Prettier, ESLint, and semantic versioning.
+A NextJS plugin for MDXLD (MDX with YAML Linked Data frontmatter) that enables component and layout selection based on frontmatter $context and $type.
 
 ## Features
 
-- 🚀 TypeScript for type safety and modern JavaScript features
-- ⚡️ Vitest for fast, modern testing
-- 🎨 Prettier for consistent code formatting
-- 🔍 ESLint for code quality
-- 📦 Semantic versioning with automated releases
-- 🔄 GitHub Actions for CI/CD
+- 🚀 NextJS App Router Support
+- 📄 MDXLD Frontmatter Processing
+- 🎨 Dynamic Component Selection via $type
+- 📱 Flexible Layout System via $context
+- 🔄 Automatic Page Generation
+- 🎯 TypeScript Support
 
 ## Installation
 
 ```bash
-pnpm add @ai-primitives/package-template
+pnpm add @ai-primitives/next-mdxld
 ```
 
 ## Usage
 
-```typescript
-import { add } from '@ai-primitives/package-template'
+### 1. Configure next.config.js
 
-const result = add(1, 2) // returns 3
+```javascript
+import { withMDXLD } from '@ai-primitives/next-mdxld'
+
+const config = withMDXLD({
+  contentDirBasePath: '/',
+  components: {
+    // Your component mappings
+  },
+  layouts: {
+    // Your layout mappings
+  }
+})
+
+export default config
 ```
 
-## Development
+### 2. Set up MDX Components
 
-```bash
-# Install dependencies
-pnpm install
+```javascript
+import { useMDXComponents } from '@ai-primitives/next-mdxld/components'
 
-# Run tests
-pnpm test
-
-# Run tests in watch mode
-pnpm test:watch
-
-# Build the package
-pnpm build
-
-# Lint the code
-pnpm lint
-
-# Format the code
-pnpm format
+export function MDXComponents(components) {
+  return {
+    ...useMDXComponents(),
+    ...components
+  }
+}
 ```
+
+### 3. Create App Layout
+
+```javascript
+import { Layout } from '@ai-primitives/next-mdxld/components'
+
+export default function RootLayout({ children }) {
+  return (
+    <Layout>
+      {children}
+    </Layout>
+  )
+}
+```
+
+### 4. Set up Dynamic Page Route
+
+```javascript
+import { MDXPage } from '@ai-primitives/next-mdxld/page'
+
+export default MDXPage
+```
+
+### Example MDX File
+
+```mdx
+---
+$type: BlogPost
+$context: BlogLayout
+title: My First Post
+---
+
+# Welcome to My Blog
+
+This content will be rendered using the BlogPost component within the BlogLayout.
+```
+
+## Documentation
+
+For detailed documentation, visit [mdxld.org](https://mdxld.org)
 
 ## Contributing
 
-Please read our [Contributing Guide](./CONTRIBUTING.md) to learn about our development process and how to propose bugfixes and improvements.
+Please read our [Contributing Guide](./CONTRIBUTING.md) to learn about our development process.
 
 ## License
 
-MIT © [AI Primitives](https://mdx.org.ai)
-
-## Dependencies
-
-This package uses the following key dependencies:
-
-- TypeScript for static typing
-- Vitest for testing
-- ESLint for linting
-- Prettier for code formatting
+MIT © [AI Primitives](https://primitives.org.ai)
