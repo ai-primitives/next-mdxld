@@ -1,0 +1,81 @@
+---
+$type: https://mdx.org.ai/API
+$context: API
+endpoint: /api/users
+method: POST
+---
+
+# Create User API
+
+This endpoint creates a new user in the system.
+
+## Request Body
+
+```typescript
+{
+  name: string;  // Required - User's full name
+  email: string; // Required - User's email address
+}
+```
+
+## Response
+
+### Success Response (200 OK)
+
+```typescript
+{
+  success: true;
+  data: {
+    name: string;
+    email: string;
+  };
+}
+```
+
+### Error Response (400 Bad Request)
+
+```typescript
+{
+  success: false;
+  error: string; // Error message describing what went wrong
+}
+```
+
+## Examples
+
+### Successful Request
+
+```bash
+curl -X POST http://localhost:3000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{"name": "John Doe", "email": "john@example.com"}'
+```
+
+### Response
+
+```json
+{
+  "success": true,
+  "data": {
+    "name": "John Doe",
+    "email": "john@example.com"
+  }
+}
+```
+
+### Failed Request (Missing Fields)
+
+```bash
+curl -X POST http://localhost:3000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{}'
+```
+
+### Response
+
+```json
+{
+  "success": false,
+  "error": "Name and email are required"
+}
+```

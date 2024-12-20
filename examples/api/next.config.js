@@ -14,6 +14,9 @@ const config = withMDXLD({
   },
   layouts: {
     API: 'https://esm.sh/@mdxui/api/layouts/default'
+  },
+  experimental: {
+    serverActions: true
   }
 })
 

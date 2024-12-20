@@ -16,19 +16,28 @@
   - [ ] Integrate mdxld parser
   - [ ] Handle frontmatter processing
   - [ ] Support $type and $context properties
-  - [ ] Support URL imports for layouts and components
+  - [x] Support URL imports for layouts and components
+  - [x] Add API route handlers support
+  - [x] Implement middleware integration
 
 - [ ] Component System
   - [ ] Create component resolution system
   - [ ] Implement useMDXComponents hook
   - [ ] Add dynamic component loading
-  - [ ] Support ESM imports from URLs (e.g., esm.sh)
+  - [x] Support ESM imports from URLs (e.g., esm.sh)
 
 - [ ] Layout System
   - [ ] Create layout resolution system
   - [ ] Implement default layouts
   - [ ] Support nested layouts
-  - [ ] Support ESM layout imports
+  - [x] Support ESM layout imports
+
+- [ ] API Support
+  - [x] Implement route handlers
+  - [x] Add CORS middleware
+  - [ ] Support API documentation generation
+  - [ ] Add request/response validation
+  - [ ] Implement authentication middleware
 
 - [ ] Page Generation
   - [ ] Implement dynamic page routing
@@ -42,7 +51,9 @@
   - [ ] Component system
   - [ ] Layout system
   - [ ] Page generation
-  - [ ] URL imports documentation
+  - [x] URL imports documentation
+  - [x] API route handlers
+  - [x] Middleware configuration
 
 - [x] Examples
   - [x] Schema.org BlogPosting example
@@ -53,6 +64,8 @@
     - [x] API documentation setup
     - [x] Component integration
     - [x] Layout configuration
+    - [x] Route handlers implementation
+    - [x] Middleware support
   - [ ] Multi-layout application
 
 ## Testing
@@ -61,13 +74,17 @@
   - [ ] Parser integration
   - [ ] Component resolution
   - [ ] Layout system
-  - [ ] URL imports handling
+  - [x] URL imports handling
+  - [ ] API route handlers
+  - [ ] Middleware functionality
 
 - [ ] Integration Tests
   - [ ] Full page generation
   - [ ] Component rendering
   - [ ] Layout application
-  - [ ] ESM imports validation
+  - [x] ESM imports validation
+  - [ ] API endpoint testing
+  - [ ] CORS middleware validation
 
 ## Release
 
