@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm'
 import { resolveComponent, type ComponentResolutionOptions } from './components'
 import { resolveLayout, type LayoutResolutionOptions } from './layouts'
 import { resolveURLImports, createImportAliases, type URLImportsConfig } from './config'
+import { useMDXComponents, type MDXFrontmatter, type MDXComponents } from './hooks'
 
 interface MDXLDConfig extends NextConfig {
   contentDirBasePath?: string
@@ -64,5 +65,5 @@ export function withMDXLD(nextConfig: MDXLDConfig = {}) {
     }
   }
 }
-export { resolveComponent, resolveLayout }
-export type { ComponentResolutionOptions, LayoutResolutionOptions, MDXLDConfig, URLImportsConfig }
+export { resolveComponent, resolveLayout, useMDXComponents }
+export type { ComponentResolutionOptions, LayoutResolutionOptions, MDXLDConfig, URLImportsConfig, MDXFrontmatter, MDXComponents }
