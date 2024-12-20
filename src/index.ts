@@ -5,13 +5,11 @@ import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
 import remarkGfm from 'remark-gfm'
 import { resolveComponent, type ComponentResolutionOptions } from './components'
 import { resolveLayout, type LayoutResolutionOptions } from './layouts'
+import { resolveURLImports, createImportAliases, type URLImportsConfig } from './config'
 
 interface MDXLDConfig extends NextConfig {
   contentDirBasePath?: string
-  urlImports?: {
-    domains: string[]
-    importMap: Record<string, string>
-  }
+  urlImports?: Partial<URLImportsConfig>
   components?: Record<string, string>
   layouts?: Record<string, string>
   webpack?: (config: Configuration, options: WebpackConfigContext) => Configuration
@@ -23,6 +21,16 @@ export function withMDXLD(nextConfig: MDXLDConfig = {}) {
     webpack: (config: Configuration, options: WebpackConfigContext) => {
       if (typeof nextConfig.webpack === 'function') {
         config = nextConfig.webpack(config, options)
+      }
+
+      // Configure URL imports
+      const urlImports = resolveURLImports(nextConfig.urlImports)
+
+      // Add trusted domains to webpack config
+      config.resolve = config.resolve || {}
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        ...createImportAliases(urlImports)
       }
 
       config.module = config.module || { rules: [] }
@@ -52,17 +60,9 @@ export function withMDXLD(nextConfig: MDXLDConfig = {}) {
         ]
       })
 
-      if (nextConfig.urlImports) {
-        config.resolve = config.resolve || {}
-        config.resolve.alias = {
-          ...config.resolve.alias,
-          ...nextConfig.urlImports.importMap
-        }
-      }
-
       return config
     }
   }
 }
 export { resolveComponent, resolveLayout }
-export type { ComponentResolutionOptions, MDXLDConfig }
+export type { ComponentResolutionOptions, LayoutResolutionOptions, MDXLDConfig, URLImportsConfig }
