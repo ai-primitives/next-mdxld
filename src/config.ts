@@ -1,41 +1,46 @@
-/**
- * Default configuration for URL imports in next-mdxld
- */
-export const defaultConfig = {
-  urlImports: {
-    domains: ['esm.sh', 'cdn.skypack.dev', 'unpkg.com'],
-    importMap: {
-      '@mdxui/blog': 'https://esm.sh/@mdxui/blog@latest',
-      '@mdxui/api': 'https://esm.sh/@mdxui/api@latest',
-      '@mdxui/shadcn': 'https://esm.sh/@mdxui/shadcn@latest'
-    }
+export interface MDXLDConfig {
+  typography?: {
+    className?: string
+    darkMode?: 'media' | 'class'
+  }
+  urlImports?: {
+    domains: string[]
+    importMap: Record<string, string>
   }
 }
 
-export interface URLImportsConfig {
-  domains: string[]
-  importMap: Record<string, string>
+const defaultUrlImports = {
+  domains: ['esm.sh', 'cdn.skypack.dev', 'unpkg.com'],
+  importMap: {
+    '@mdxui/blog': 'https://esm.sh/@mdxui/blog@latest',
+    '@mdxui/api': 'https://esm.sh/@mdxui/api@latest',
+    '@mdxui/shadcn': 'https://esm.sh/@mdxui/shadcn@latest'
+  }
 }
 
-/**
- * Validates and merges URL imports configuration with defaults
- */
-export function resolveURLImports(config?: Partial<URLImportsConfig>): URLImportsConfig {
-  if (!config) return defaultConfig.urlImports
+export const defaultConfig: MDXLDConfig = {
+  typography: {
+    className: 'prose dark:prose-invert max-w-none',
+    darkMode: 'media'
+  },
+  urlImports: defaultUrlImports
+}
+
+export function resolveURLImports(config?: Partial<MDXLDConfig['urlImports']>): MDXLDConfig['urlImports'] {
+  const baseConfig = { ...defaultUrlImports }
+
+  if (!config) return baseConfig
 
   return {
-    domains: [...new Set([...defaultConfig.urlImports.domains, ...(config.domains || [])])],
+    domains: [...new Set([...baseConfig.domains, ...(config.domains || [])])],
     importMap: {
-      ...defaultConfig.urlImports.importMap,
+      ...baseConfig.importMap,
       ...(config.importMap || {})
     }
   }
 }
 
-/**
- * Creates webpack resolve aliases from import map
- */
-export function createImportAliases(config: URLImportsConfig): Record<string, string> {
+export function createImportAliases(config: NonNullable<MDXLDConfig['urlImports']>): Record<string, string> {
   return Object.entries(config.importMap).reduce((aliases, [key, value]) => {
     aliases[key] = value
     return aliases

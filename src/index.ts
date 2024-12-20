@@ -1,33 +1,24 @@
 import type { NextConfig } from 'next'
+import type { Configuration as WebpackConfig } from 'webpack'
 import type { WebpackConfigContext } from 'next/dist/server/config-shared'
-import type { Configuration } from 'webpack'
-import remarkMdxFrontmatter from 'remark-mdx-frontmatter'
+import remarkMdxld from 'remark-mdxld'
 import remarkGfm from 'remark-gfm'
 import { resolveComponent, type ComponentResolutionOptions } from './components'
 import { resolveLayout, type LayoutResolutionOptions } from './layouts'
-import { resolveURLImports, createImportAliases, type URLImportsConfig } from './config'
-import { useMDXComponents, type MDXFrontmatter, type MDXComponents } from './hooks'
+import { resolveURLImports, createImportAliases, type MDXLDConfig } from './config'
+import { useMDXComponents } from './hooks'
 
-interface MDXLDConfig extends NextConfig {
-  contentDirBasePath?: string
-  urlImports?: Partial<URLImportsConfig>
-  components?: Record<string, string>
-  layouts?: Record<string, string>
-  webpack?: (config: Configuration, options: WebpackConfigContext) => Configuration
-}
-
-export function withMDXLD(nextConfig: MDXLDConfig = {}) {
+const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
   return {
     ...nextConfig,
     experimental: {
       ...nextConfig.experimental,
       urlImports: {
-        // Default trusted domains for URL imports
         domains: ['esm.sh', 'cdn.skypack.dev', 'unpkg.com'],
-        ...nextConfig.urlImports?.domains && { domains: nextConfig.urlImports.domains }
+        ...(nextConfig.urlImports?.domains && { domains: nextConfig.urlImports.domains })
       }
     },
-    webpack: (config: Configuration, options: WebpackConfigContext) => {
+    webpack: (config: WebpackConfig, options: WebpackConfigContext): WebpackConfig => {
       if (typeof nextConfig.webpack === 'function') {
         config = nextConfig.webpack(config, options)
       }
@@ -39,12 +30,13 @@ export function withMDXLD(nextConfig: MDXLDConfig = {}) {
       config.resolve = config.resolve || {}
       config.resolve.alias = {
         ...config.resolve.alias,
-        ...createImportAliases(urlImports)
+        ...(urlImports && createImportAliases(urlImports))
       }
 
-      config.module = config.module || { rules: [] }
+      config.module = config.module || {}
       config.module.rules = config.module.rules || []
 
+      // Add MDX loader configuration
       config.module.rules.push({
         test: /\.mdx?$/,
         use: [
@@ -54,14 +46,7 @@ export function withMDXLD(nextConfig: MDXLDConfig = {}) {
             options: {
               remarkPlugins: [
                 remarkGfm,
-                [remarkMdxFrontmatter, {
-                  name: 'frontmatter',
-                  yaml: {
-                    alias: {
-                      '@': '$',
-                    }
-                  }
-                }]
+                remarkMdxld
               ],
               providerImportSource: '@mdx-js/react'
             }
@@ -69,10 +54,22 @@ export function withMDXLD(nextConfig: MDXLDConfig = {}) {
         ]
       })
 
+      // Add URL loader for remote imports
+      config.module.rules.push({
+        test: /^https?:\/\//,
+        loader: 'url-loader',
+        options: {
+          limit: false,
+          publicPath: '/_next/static/chunks/',
+          outputPath: 'static/chunks/',
+        }
+      })
+
       return config
     }
   }
 }
 
+export default withMdxld
 export { resolveComponent, resolveLayout, useMDXComponents }
-export type { ComponentResolutionOptions, LayoutResolutionOptions, MDXLDConfig, URLImportsConfig, MDXFrontmatter, MDXComponents }
+export type { MDXLDConfig, ComponentResolutionOptions, LayoutResolutionOptions }

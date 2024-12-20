@@ -8,6 +8,14 @@ A NextJS plugin for MDXLD (MDX with YAML Linked Data frontmatter) that enables c
 ## Quick Start
 
 ```mdx
+---
+$id: https://example.com/blog/my-blog-post
+$type: https://schema.org/BlogPosting
+title: My Blog Post
+author: John Doe
+datePublished: 2024-01-15
+---
+
 export layout from 'https://esm.sh/@mdxui/blog/simple'
 export components from 'https://esm.sh/@mdxui/shadcn'
 
@@ -28,46 +36,62 @@ This content will use the simple blog layout and shadcn components.
 ## Installation
 
 ```bash
-pnpm add next-mdxld
+# Using pnpm (recommended)
+pnpm add next-mdxld @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
+# Or using npm
+npm install next-mdxld @next/mdx @mdx-js/loader @mdx-js/react @types/mdx
 ```
 
-## Usage
+## Setup
 
-### 1. Configure next.config.js
+### 1. Configure Next.js for MDX
+
+Create or update your `next.config.js`:
 
 ```javascript
-import { withMDXLD } from 'next-mdxld'
+import createMDX from '@next/mdx'
+import remarkMdxld from 'remark-mdxld'
 
-const config = withMDXLD({
-  contentDirBasePath: '/',
-  // Enable URL imports for components and layouts
-  urlImports: true,
-  components: {
-    // Schema.org components
-    'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/blog/components',
-    'https://schema.org/WebSite': 'https://esm.sh/@mdxui/site/components',
-    // mdx.org.ai components
-    'https://mdx.org.ai/API': 'https://esm.sh/@mdxui/api/components',
-    'https://mdx.org.ai/Agent': 'https://esm.sh/@mdxui/agent/components'
-  },
-  layouts: {
-    // Your layout mappings
-    Blog: 'https://esm.sh/@mdxui/blog/layouts/default',
-    API: 'https://esm.sh/@mdxui/api/layouts/default'
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  // Configure `pageExtensions` to include MDX files
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+  // Allow URL imports from trusted domains
+  experimental: {
+    urlImports: ['https://esm.sh']
+  }
+}
+
+const withMDX = createMDX({
+  // Add markdown plugins here
+  options: {
+    remarkPlugins: [remarkMdxld],
+    rehypePlugins: []
   }
 })
 
-export default config
+// Merge MDX config with Next.js config
+export default withMDX(nextConfig)
 ```
 
 ### 2. Set up MDX Components
 
-```javascript
-import { useMDXComponents } from 'next-mdxld/components'
+Create `mdx-components.tsx` in your project root:
 
-export function MDXComponents(components) {
+```typescript
+import React from 'react'
+import type { MDXComponents } from 'mdx/types'
+import { defaultLayouts } from 'next-mdxld/layouts'
+
+export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
-    ...useMDXComponents(),
+    wrapper: ({ children, frontmatter }) => {
+      const Layout = frontmatter?.$type ?
+        defaultLayouts[frontmatter.$type] || defaultLayouts.default :
+        defaultLayouts.default
+
+      return <Layout frontmatter={frontmatter}>{children}</Layout>
+    },
     ...components
   }
 }
@@ -101,7 +125,6 @@ export default MDXPage
 ```mdx
 ---
 $type: https://schema.org/BlogPosting
-$context: Blog
 title: My Technical Blog Post
 author: John Doe
 datePublished: 2024-01-15
@@ -116,7 +139,6 @@ This content will be rendered using the BlogPosting component within the Blog la
 ```mdx
 ---
 $type: https://schema.org/WebSite
-$context: Site
 name: My Developer Portfolio
 url: https://example.com
 ---
@@ -130,7 +152,6 @@ This content uses the WebSite component for optimal SEO and structure.
 ```mdx
 ---
 $type: https://mdx.org.ai/API
-$context: API
 endpoint: /api/users
 method: POST
 ---
@@ -144,8 +165,7 @@ This content will be rendered with API-specific components and documentation lay
 ```mdx
 ---
 $type: https://mdx.org.ai/Agent
-$context: Agent
-capabilities: ["chat", "search", "code"]
+tools: ["chat", "search", "code"]
 ---
 
 # Support Agent
@@ -155,7 +175,9 @@ This content will be rendered with Agent-specific components and interaction UI.
 
 ## Documentation
 
-For detailed documentation, visit [mdxld.org](https://mdxld.org)
+For detailed documentation and examples, visit:
+- [mdxld.org](https://mdxld.org) - Main documentation
+- [Next.js MDX Documentation](https://nextjs.org/docs/pages/building-your-application/configuring/mdx) - Official Next.js MDX setup guide
 
 ## Contributing
 
