@@ -1,5 +1,6 @@
 import type { NextConfig } from 'next'
 import type { Configuration as WebpackConfig } from 'webpack'
+import type { WebpackConfigContext } from 'next/dist/server/config-shared'
 import remarkMdxld from 'remark-mdxld'
 
 interface WithMdxldOptions {
@@ -12,17 +13,14 @@ interface WithMdxldOptions {
 const withMdxld = (nextConfig: NextConfig & WithMdxldOptions = {}) => {
   return {
     ...nextConfig,
-    webpack: (config: WebpackConfig, options: any) => {
-      // Handle existing webpack config
+    webpack: (config: WebpackConfig, options: WebpackConfigContext): WebpackConfig => {
       if (typeof nextConfig.webpack === 'function') {
         config = nextConfig.webpack(config, options)
       }
 
-      // Initialize module and rules if they don't exist
       config.module = config.module || {}
       config.module.rules = config.module.rules || []
 
-      // Add MDX support with remark-mdxld
       config.module.rules.push({
         test: /\.mdx?$/,
         use: [
@@ -37,7 +35,6 @@ const withMdxld = (nextConfig: NextConfig & WithMdxldOptions = {}) => {
         ]
       })
 
-      // Support URL imports
       config.module.rules.push({
         test: /^https?:\/\//,
         loader: 'url-loader',
