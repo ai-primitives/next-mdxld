@@ -14,8 +14,11 @@ const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
     experimental: {
       ...nextConfig.experimental,
       urlImports: {
-        domains: ['esm.sh', 'cdn.skypack.dev', 'unpkg.com'],
-        ...(nextConfig.urlImports?.domains && { domains: nextConfig.urlImports.domains })
+        ...nextConfig.experimental?.urlImports,
+        domains: [
+          'esm.sh', 'cdn.skypack.dev', 'unpkg.com',
+          ...(nextConfig.urlImports?.domains || [])
+        ]
       }
     },
     webpack: (config: WebpackConfig, options: WebpackConfigContext): WebpackConfig => {
