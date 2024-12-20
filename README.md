@@ -8,6 +8,14 @@ A NextJS plugin for MDXLD (MDX with YAML Linked Data frontmatter) that enables c
 ## Quick Start
 
 ```mdx
+---
+$id: https://example.com/blog/my-blog-post
+$type: https://schema.org/BlogPosting
+title: My Blog Post
+author: John Doe
+datePublished: 2024-01-15
+---
+
 export layout from 'https://esm.sh/@mdxui/blog/simple'
 export components from 'https://esm.sh/@mdxui/shadcn'
 
