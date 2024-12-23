@@ -7,6 +7,7 @@ import { resolveComponent, type ComponentResolutionOptions } from './components.
 import { resolveLayout, type LayoutResolutionOptions } from './layouts.js'
 import { resolveURLImports, createImportAliases, type MDXLDConfig } from './config.js'
 import { useMDXComponents } from './hooks.js'
+import { default as MDXPage } from './page.js'
 
 const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
   return {
@@ -59,5 +60,5 @@ const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
 }
 
 export default withMdxld
-export { resolveComponent, resolveLayout, useMDXComponents }
+export { resolveComponent, resolveLayout, useMDXComponents, MDXPage }
 export type { MDXLDConfig, ComponentResolutionOptions, LayoutResolutionOptions }

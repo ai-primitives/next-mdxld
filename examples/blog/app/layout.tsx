@@ -1,5 +1,4 @@
 import React from 'react'
-import { Layout } from 'next-mdxld/components'
 
 export const metadata = {
   title: 'Blog Example - next-mdxld',
@@ -14,7 +13,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Layout>{children}</Layout>
+        {children}
       </body>
     </html>
   )

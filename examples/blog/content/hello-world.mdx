@@ -1,9 +1,5 @@
-export layout from 'https://esm.sh/@mdxui/blog/simple'
-export components from 'https://esm.sh/@mdxui/shadcn'
-
 ---
-$type: https://schema.org/BlogPosting
-$context: Blog
+type: blog
 title: Getting Started with next-mdxld
 author: John Doe
 datePublished: 2024-01-15
@@ -11,11 +7,15 @@ datePublished: 2024-01-15
 
 # Welcome to next-mdxld
 
-This is an example blog post using Schema.org BlogPosting type with next-mdxld.
+This is an example blog post using next-mdxld.
 
 ## Features
 
-- Automatic component selection based on $type
-- Layout injection from $context
-- URL imports for components and layouts
+- Automatic component selection based on type
+- Layout injection from context
 - Full Schema.org support
+- Customizable components and layouts
+
+## Getting Started
+
+To get started with next-mdxld, simply create a new MDX file in your content directory and add some frontmatter metadata.

@@ -1,20 +1,18 @@
 import React from 'react'
 import { readFileSync, readdirSync } from 'fs'
 import { join, extname } from 'path'
-import remarkMdxld from 'remark-mdxld'
-import remarkGfm from 'remark-gfm'
-import * as runtime from 'react/jsx-runtime'
 import dynamic from 'next/dynamic'
-import { compile } from '@mdx-js/mdx'
 import { notFound } from 'next/navigation'
-import { createElement } from 'react'
-import { MDXProvider } from '@mdx-js/react'
 import type { MDXContentProps } from './mdx-content'
 
 interface MDXPageProps {
   params: {
     mdxPath?: string[]
   }
+}
+
+interface StaticParam {
+  mdxPath: string[]
 }
 
 function getAllMDXFiles(dir: string): string[] {
@@ -38,26 +36,31 @@ function getAllMDXFiles(dir: string): string[] {
   return files
 }
 
-async function getMDXContent(mdxPath: string[] = []): Promise<MDXContentProps | null> {
-  const contentPath = join(process.cwd(), 'content', [...mdxPath].join('/'))
-  const fullPath = contentPath.endsWith('.mdx') ? contentPath : `${contentPath}.mdx`
+async function getMDXSource(mdxPath: string[] = []): Promise<string | null> {
+  const contentDir = join(process.cwd(), 'content')
+  let fullPath: string
+  
+  if (mdxPath.length === 0) {
+    // Try to find an index.mdx file
+    fullPath = join(contentDir, 'index.mdx')
+    try {
+      return readFileSync(fullPath, 'utf-8')
+    } catch (error) {
+      // If no index.mdx exists, try to use the first MDX file
+      const files = getAllMDXFiles(contentDir)
+      if (files.length > 0) {
+        return readFileSync(files[0], 'utf-8')
+      }
+      return null
+    }
+  }
+  
+  // Handle specific file paths
+  const contentPath = join(contentDir, mdxPath.join('/'))
+  fullPath = contentPath.endsWith('.mdx') ? contentPath : `${contentPath}.mdx`
   
   try {
-    const source = readFileSync(fullPath, 'utf-8')
-    const code = String(await compile(source, {
-      remarkPlugins: [remarkGfm, remarkMdxld],
-      development: process.env.NODE_ENV === 'development'
-    }))
-    
-    // Create a module scope for evaluation
-    const scope = { React, createElement, MDXProvider, ...runtime }
-    const fn = new Function(...Object.keys(scope), code)
-    const mod = fn(...Object.values(scope))
-    
-    return {
-      content: mod.default,
-      frontmatter: mod.frontmatter || {}
-    }
+    return readFileSync(fullPath, 'utf-8')
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       return null
@@ -70,28 +73,34 @@ async function getMDXContent(mdxPath: string[] = []): Promise<MDXContentProps | 
 // Client component for rendering MDX content
 const MDXContent = dynamic(() => import('./mdx-content'), { ssr: true })
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<StaticParam[]> {
   const contentDir = join(process.cwd(), 'content')
   const mdxFiles = getAllMDXFiles(contentDir)
   
-  return mdxFiles.map(file => ({
+  // Add root path
+  const paths: StaticParam[] = [{ mdxPath: [] }]
+  
+  // Add file paths
+  paths.push(...mdxFiles.map(file => ({
     mdxPath: file
       .replace(contentDir, '')
       .replace(/^\//, '')
       .replace(/\.mdx$/, '')
       .split('/')
       .filter(Boolean)
-  }))
+  })))
+  
+  return paths
 }
 
 export const dynamicParams = true
 
 export default async function MDXPage({ params }: MDXPageProps) {
-  const mdxContent = await getMDXContent(params.mdxPath)
+  const source = await getMDXSource(params.mdxPath)
   
-  if (!mdxContent) {
+  if (!source) {
     notFound()
   }
   
-  return createElement(MDXContent, mdxContent)
+  return <MDXContent source={source} />
 } 

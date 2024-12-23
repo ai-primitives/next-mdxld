@@ -7,10 +7,10 @@ const config = withMdxld({
     }
   },
   components: {
-    'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/blog/components'
+    // 'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/blog/components'
   },
   layouts: {
-    Blog: 'https://esm.sh/@mdxui/blog/layouts/default'
+    // Blog: 'https://esm.sh/@mdxui/blog/layouts/default'
   }
 })
 
