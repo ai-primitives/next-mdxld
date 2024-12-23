@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import type { ComponentType } from 'react'
-import { resolveComponent } from './components'
-import { resolveLayout } from './layouts'
+import { resolveComponent } from './components.js'
+import { resolveLayout } from './layouts.js'
 
 export interface MDXFrontmatter {
   type: string

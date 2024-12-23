@@ -24,8 +24,8 @@ importers:
         specifier: ^5.0.0
         version: 5.0.0
       remark-mdxld:
-        specifier: ^0.1.0
-        version: 0.1.0(@mdx-js/mdx@3.1.0(acorn@8.14.0))
+        specifier: ^0.2.1
+        version: 0.2.1(@mdx-js/mdx@3.1.0(acorn@8.14.0))
     devDependencies:
       '@eslint/js':
         specifier: ^9.17.0
@@ -1969,10 +1969,6 @@ packages:
   mdast-util-to-string@4.0.0:
     resolution: {integrity: sha512-0H44vDimn51F0YwvxSJSm0eCDOJTRlmN0R1yBh4HLj9wiV1Dn0QoXGbvFAWj2hSItVTlCmBF1hqKlIyUBVFLPg==}
 
-  mdast@3.0.0:
-    resolution: {integrity: sha512-xySmf8g4fPKMeC07jXGz971EkLbWAJ83s4US2Tj9lEdnZ142UP5grN73H1Xd3HzrdbU5o9GYYP/y8F9ZSwLE9g==}
-    deprecated: '`mdast` was renamed to `remark`'
-
   mdxld@1.0.1:
     resolution: {integrity: sha512-qd6+k8TTuT/q3jOnuewtaCWwp+gY++ye4l/LXmxOkGOrV+XyLf4SIYw605TEbiKO3c0tJe/Beex6p3n55n52VQ==}
 
@@ -2580,13 +2576,8 @@ packages:
   remark-mdx@3.1.0:
     resolution: {integrity: sha512-Ngl/H3YXyBV9RcRNdlYsZujAmhsxwzxpDzpDEhFBVAGthS4GDgnctpDjgFl/ULx5UEDzqtW1cyBSNKqYYrqLBA==}
 
-  remark-mdxld@0.1.0:
-    resolution: {integrity: sha512-s0R7CvWxH+jmhmx/d2euqESB3t5XuRA08EzER7vUvdV7JG1063H807mEkAkAjcZW6KiZFfdNSgz3KqevoXBeUQ==}
-    peerDependencies:
-      '@mdx-js/mdx': ^3.0.0
-
-  remark-mdxld@0.2.0:
-    resolution: {integrity: sha512-1Bb/iVGk9UBcOkxahCgptnRGbXOVsgFGUzpm360SVf9qVVAv02gZjfY5qFPPO7TprNR6dpHdeQWA/TzpZCXFOg==}
+  remark-mdxld@0.2.1:
+    resolution: {integrity: sha512-kpBRbca3zmq/md3POwLVxQHZhF7QLYVNJdp46xs8b1VlsH9GK2Pssg1HpMVkGetrngJjDLc7j4hyT7VAKyfY+A==}
     peerDependencies:
       '@mdx-js/mdx': ^3.0.0
 
@@ -5179,8 +5170,6 @@ snapshots:
     dependencies:
       '@types/mdast': 4.0.4
 
-  mdast@3.0.0: {}
-
   mdxld@1.0.1(@mdx-js/mdx@3.1.0(acorn@8.14.0))(web-streams-polyfill@3.3.3):
     dependencies:
       json5: 2.2.3
@@ -5188,7 +5177,7 @@ snapshots:
       remark-frontmatter: 5.0.0
       remark-gfm: 4.0.0
       remark-mdx: 3.1.0
-      remark-mdxld: 0.2.0(@mdx-js/mdx@3.1.0(acorn@8.14.0))
+      remark-mdxld: 0.2.1(@mdx-js/mdx@3.1.0(acorn@8.14.0))
       remark-parse: 11.0.0
       unified: 11.0.5
       unist-util-visit: 5.0.0
@@ -5915,21 +5904,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  remark-mdxld@0.1.0(@mdx-js/mdx@3.1.0(acorn@8.14.0)):
-    dependencies:
-      '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
-      mdast: 3.0.0
-      remark-frontmatter: 5.0.0
-      remark-gfm: 4.0.0
-      remark-mdx: 3.1.0
-      remark-parse: 11.0.0
-      remark-stringify: 11.0.0
-      unified: 11.0.5
-      yaml: 2.6.1
-    transitivePeerDependencies:
-      - supports-color
-
-  remark-mdxld@0.2.0(@mdx-js/mdx@3.1.0(acorn@8.14.0)):
+  remark-mdxld@0.2.1(@mdx-js/mdx@3.1.0(acorn@8.14.0)):
     dependencies:
       '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
       remark: 15.0.1

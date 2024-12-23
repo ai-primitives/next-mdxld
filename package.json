@@ -6,6 +6,20 @@
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components": {
+      "types": "./dist/components/index.d.ts",
+      "import": "./dist/components/index.js"
+    },
+    "./hooks": {
+      "types": "./dist/hooks.d.ts",
+      "import": "./dist/hooks.js"
+    }
+  },
   "workspaces": [
     "examples/*"
   ],
@@ -44,7 +58,7 @@
     "mdxld": "^1.0.1",
     "remark-gfm": "^4.0.0",
     "remark-mdx-frontmatter": "^5.0.0",
-    "remark-mdxld": "^0.1.0"
+    "remark-mdxld": "^0.2.1"
   },
   "peerDependencies": {
     "next": "^13.0.0 || ^14.0.0",

@@ -1,4 +1,10 @@
-export * from '../components'
-export * from '../hooks'
-export { DefaultLayout } from '../layouts/default'
-export type { DefaultLayoutProps } from '../layouts/default'
+export {
+  resolveComponent,
+  getComponents,
+  mergeComponents,
+  type ComponentResolutionOptions,
+  type ComponentsMap,
+  DefaultLayout,
+  type DefaultLayoutProps
+} from '../components'
+export * from '../hooks' 

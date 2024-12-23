@@ -1,7 +1,10 @@
 import type { FC } from 'react'
 import type { MDXProps } from 'mdx/types'
 import type { ComponentType } from 'react'
-import { importComponents, resolveImportUrl } from './imports'
+import { importComponents, resolveImportUrl } from './imports.js'
+export * from './hooks.js'
+export { DefaultLayout } from './layouts/default.js'
+export type { DefaultLayoutProps } from './layouts/default.js'
 
 export interface ComponentResolutionOptions {
   type: string

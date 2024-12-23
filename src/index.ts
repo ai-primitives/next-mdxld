@@ -3,37 +3,33 @@ import type { Configuration as WebpackConfig } from 'webpack'
 import type { WebpackConfigContext } from 'next/dist/server/config-shared'
 import remarkMdxld from 'remark-mdxld'
 import remarkGfm from 'remark-gfm'
-import { resolveComponent, type ComponentResolutionOptions } from './components'
-import { resolveLayout, type LayoutResolutionOptions } from './layouts'
-import { resolveURLImports, createImportAliases, type MDXLDConfig } from './config'
-import { useMDXComponents } from './hooks'
+import { resolveComponent, type ComponentResolutionOptions } from './components.js'
+import { resolveLayout, type LayoutResolutionOptions } from './layouts.js'
+import { resolveURLImports, createImportAliases, type MDXLDConfig } from './config.js'
+import { useMDXComponents } from './hooks.js'
 
 const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
   return {
     ...nextConfig,
     experimental: {
       ...nextConfig.experimental,
-      urlImports: {
-        ...nextConfig.experimental?.urlImports,
-        domains: [
-          'esm.sh', 'cdn.skypack.dev', 'unpkg.com',
-          ...(nextConfig.urlImports?.domains || [])
-        ]
-      }
+      urlImports: true
     },
     webpack: (config: WebpackConfig, options: WebpackConfigContext): WebpackConfig => {
       if (typeof nextConfig.webpack === 'function') {
         config = nextConfig.webpack(config, options)
       }
 
-      // Configure URL imports
-      const urlImports = resolveURLImports(nextConfig.urlImports)
-
-      // Add trusted domains to webpack config
-      config.resolve = config.resolve || {}
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        ...(urlImports && createImportAliases(urlImports))
+      // Configure experiments for URL imports
+      config.experiments = {
+        ...config.experiments,
+        buildHttp: {
+          allowedUris: [
+            'https://esm.sh/',
+            'https://cdn.skypack.dev/',
+            'https://unpkg.com/'
+          ]
+        }
       }
 
       config.module = config.module || {}
@@ -55,17 +51,6 @@ const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
             }
           }
         ]
-      })
-
-      // Add URL loader for remote imports
-      config.module.rules.push({
-        test: /^https?:\/\//,
-        loader: 'url-loader',
-        options: {
-          limit: false,
-          publicPath: '/_next/static/chunks/',
-          outputPath: 'static/chunks/',
-        }
       })
 
       return config

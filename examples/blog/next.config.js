@@ -1,12 +1,9 @@
-import { withMDXLD } from 'next-mdxld'
+import withMdxld from 'next-mdxld'
 
-const config = withMDXLD({
-  contentDirBasePath: '/content',
-  urlImports: {
-    domains: ['esm.sh', 'cdn.skypack.dev', 'unpkg.com'],
-    importMap: {
-      '@mdxui/blog': 'https://esm.sh/@mdxui/blog@latest',
-      '@mdxui/shadcn': 'https://esm.sh/@mdxui/shadcn@latest'
+const config = withMdxld({
+  experimental: {
+    urlImports: {
+      domains: ['esm.sh', 'cdn.skypack.dev', 'unpkg.com']
     }
   },
   components: {
