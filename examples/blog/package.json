@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "next": "^14.0.0",
+    "next-mdx-remote": "^4.4.1",
     "next-mdxld": "workspace:*",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "remark-frontmatter": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
