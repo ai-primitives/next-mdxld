@@ -1,9 +1,12 @@
-import withMdxld from 'next-mdxld'
-
-const config = withMdxld({
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   experimental: {
     urlImports: {
-      domains: ['esm.sh', 'cdn.skypack.dev', 'unpkg.com']
+      allowedUris: [
+        'https://esm.sh/**',
+        'https://cdn.skypack.dev/**',
+        'https://unpkg.com/**'
+      ]
     }
   },
   components: {
@@ -12,6 +15,6 @@ const config = withMdxld({
   layouts: {
     // Blog: 'https://esm.sh/@mdxui/blog/layouts/default'
   }
-})
+}
 
-export default config
+export default nextConfig

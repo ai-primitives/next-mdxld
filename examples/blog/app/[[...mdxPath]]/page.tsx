@@ -1,3 +1,3 @@
-import MDXPage from 'next-mdxld/page'
+import { MDXPage } from 'next-mdxld'
 
 export default MDXPage

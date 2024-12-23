@@ -7,6 +7,9 @@ import { resolveLayout } from './layouts.js'
 
 export interface MDXFrontmatter {
   type: string
+  title: string
+  author: string
+  datePublished: string
   context?: string
   components?: Record<string, string>
   layouts?: Record<string, string>
@@ -31,12 +34,22 @@ export function useMDXComponents(frontmatter: MDXFrontmatter): MDXComponents {
   })
 
   useEffect(() => {
+    if (!frontmatter.type) {
+      setState({
+        components: {},
+        layout: null,
+        isLoading: false,
+        error: new Error('Missing required frontmatter type')
+      })
+      return
+    }
+
     const { type, context, components: componentMap, layouts: layoutMap } = frontmatter
 
     async function resolveComponents() {
       try {
         // Resolve components based on type and context
-        const resolvedComponent = await resolveComponent({
+        const resolvedComponents = await resolveComponent({
           type,
           context,
           components: componentMap
@@ -50,7 +63,7 @@ export function useMDXComponents(frontmatter: MDXFrontmatter): MDXComponents {
         })
 
         setState({
-          components: resolvedComponent ? { mdx: resolvedComponent } : {},
+          components: resolvedComponents || {},
           layout: resolvedLayout,
           isLoading: false
         })

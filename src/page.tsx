@@ -1,9 +1,11 @@
-import React from 'react'
 import { readFileSync, readdirSync } from 'fs'
 import { join, extname } from 'path'
-import dynamic from 'next/dynamic'
 import { notFound } from 'next/navigation'
-import type { MDXContentProps } from './mdx-content'
+import { MDXRemote, compileMDX } from 'next-mdx-remote/rsc'
+import remarkMdxld from 'remark-mdxld'
+import remarkGfm from 'remark-gfm'
+import remarkFrontmatter from 'remark-mdx-frontmatter'
+import { useMDXComponents } from './hooks'
 
 interface MDXPageProps {
   params: {
@@ -13,6 +15,14 @@ interface MDXPageProps {
 
 interface StaticParam {
   mdxPath: string[]
+}
+
+interface Frontmatter {
+  type: string
+  title: string
+  author: string
+  datePublished: string
+  [key: string]: unknown
 }
 
 function getAllMDXFiles(dir: string): string[] {
@@ -70,9 +80,6 @@ async function getMDXSource(mdxPath: string[] = []): Promise<string | null> {
   }
 }
 
-// Client component for rendering MDX content
-const MDXContent = dynamic(() => import('./mdx-content'), { ssr: true })
-
 export async function generateStaticParams(): Promise<StaticParam[]> {
   const contentDir = join(process.cwd(), 'content')
   const mdxFiles = getAllMDXFiles(contentDir)
@@ -101,6 +108,42 @@ export default async function MDXPage({ params }: MDXPageProps) {
   if (!source) {
     notFound()
   }
+
+  // First compile to get the frontmatter
+  const { frontmatter } = await compileMDX<Frontmatter>({
+    source,
+    options: {
+      parseFrontmatter: true,
+      mdxOptions: {
+        remarkPlugins: [
+          remarkGfm,
+          remarkFrontmatter,
+          remarkMdxld
+        ]
+      }
+    }
+  })
+
+  if (!frontmatter || !frontmatter.type) {
+    throw new Error('Missing required frontmatter')
+  }
+
+  const { components } = useMDXComponents(frontmatter)
   
-  return <MDXContent source={source} />
+  return (
+    <MDXRemote
+      source={source}
+      components={components}
+      options={{
+        parseFrontmatter: true,
+        mdxOptions: {
+          remarkPlugins: [
+            remarkGfm,
+            remarkFrontmatter,
+            remarkMdxld
+          ]
+        }
+      }}
+    />
+  )
 } 
