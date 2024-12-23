@@ -16,8 +16,7 @@ author: John Doe
 datePublished: 2024-01-15
 ---
 
-export layout from 'https://esm.sh/@mdxui/blog/simple'
-export components from 'https://esm.sh/@mdxui/shadcn'
+export { layout, components } from 'https://esm.sh/@mdxui/shadcn'
 
 # My Blog Post
 
