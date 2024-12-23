@@ -1,4 +1,6 @@
-import { createMDXPage, BlogLayout, BlogPosting } from 'next-mdxld'
+import { createMDXPage } from 'next-mdxld'
+import { join } from 'path'
 
-export default createMDXPage(BlogLayout, BlogPosting)
-export { generateStaticParams } from 'next-mdxld'
+export default createMDXPage({
+  contentDir: join(process.cwd(), 'content')
+})

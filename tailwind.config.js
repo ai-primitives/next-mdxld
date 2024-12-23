@@ -1,14 +1,14 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+export default {
   content: [
     './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx}'
+    './content/**/*.{js,ts,jsx,tsx,mdx}',
+    '../../src/**/*.{js,ts,jsx,tsx,mdx}'
   ],
-  darkMode: 'media', // Use system preference
   theme: {
-    extend: {}
+    extend: {},
   },
   plugins: [
     require('@tailwindcss/typography')
-  ]
+  ],
 }

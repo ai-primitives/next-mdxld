@@ -4,9 +4,11 @@ import { join } from 'path'
 import { readFile } from 'fs/promises'
 import { compileMDX } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
-import remarkMdxld from 'remark-mdxld'
-import { resolveComponent } from './components'
-import { resolveLayout } from './layouts'
+import remarkMdxld from './remark-mdxld'
+import remarkFrontmatter from 'remark-frontmatter'
+import dynamic from 'next/dynamic.js'
+
+const MDXRenderer = dynamic(() => import('./mdx-renderer'), { ssr: true })
 
 export interface Frontmatter {
   type: string
@@ -43,22 +45,18 @@ export async function createMDXPage(options: {
           parseFrontmatter: true,
           mdxOptions: {
             remarkPlugins: [
+              remarkFrontmatter,
               remarkGfm,
-              remarkMdxld as any
+              remarkMdxld
             ]
           }
         }
       })
 
-      const Component = resolveComponent({ type: frontmatter.type })
-      const Layout = resolveLayout({ type: frontmatter.type })
-
       return (
-        <Layout>
-          <Component frontmatter={frontmatter}>
-            {content}
-          </Component>
-        </Layout>
+        <MDXRenderer frontmatter={frontmatter}>
+          {content}
+        </MDXRenderer>
       )
     } catch (error) {
       console.error('Failed to get MDX source:', error)

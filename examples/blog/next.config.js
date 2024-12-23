@@ -1,3 +1,5 @@
+import withMdxld from 'next-mdxld'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -5,4 +7,4 @@ const nextConfig = {
   }
 }
 
-export default nextConfig
+export default withMdxld(nextConfig)

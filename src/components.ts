@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react'
 import type { Frontmatter } from './page'
-import dynamic from 'next/dynamic'
+import dynamic from 'next/dynamic.js'
 
 export interface ComponentResolutionOptions {
   type: string
@@ -14,7 +14,8 @@ export interface BlogPostingProps {
 
 const components: Record<string, ComponentType<BlogPostingProps>> = {
   'https://schema.org/BlogPosting': dynamic(() => import('./components/BlogPosting')),
-  'https://schema.org/Article': dynamic(() => import('./components/BlogPosting'))
+  'https://schema.org/Article': dynamic(() => import('./components/BlogPosting')),
+  'blog': dynamic(() => import('./components/BlogPosting'))
 }
 
 export function resolveComponent(options: ComponentResolutionOptions): ComponentType<BlogPostingProps> {

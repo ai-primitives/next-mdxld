@@ -8,9 +8,11 @@
     "start": "next start"
   },
   "dependencies": {
-    "next": "^14.0.0",
-    "next-mdx-remote": "^4.4.1",
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.18",
+    "next": "^14.2.21",
     "next-mdxld": "workspace:*",
+    "postcss": "^8.4.35",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "remark-frontmatter": "^5.0.0"

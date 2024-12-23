@@ -1,27 +1,28 @@
+'use client'
+
 import React from 'react'
-import { Frontmatter } from '../page'
+import type { ReactNode } from 'react'
+import type { Frontmatter } from '../page'
 
 export interface BlogPostingProps {
+  children: ReactNode
   frontmatter: Frontmatter
-  children: React.ReactNode
 }
 
-export default function BlogPosting({ frontmatter, children }: BlogPostingProps) {
-  const { title, author, datePublished } = frontmatter
-
+export default function BlogPosting({ children, frontmatter }: BlogPostingProps) {
   return (
-    <article className="prose lg:prose-xl mx-auto px-4">
+    <article className="prose lg:prose-xl mx-auto">
       <header className="mb-8">
-        <h1 className="text-4xl font-bold mb-2">{title}</h1>
+        <h1 className="text-3xl font-bold mb-2">{frontmatter.title}</h1>
         <div className="text-gray-600">
-          <span>By {author}</span>
+          <span>By {frontmatter.author}</span>
           <span className="mx-2">•</span>
-          <time dateTime={datePublished}>
-            {new Date(datePublished).toLocaleDateString()}
+          <time dateTime={frontmatter.datePublished}>
+            {new Date(frontmatter.datePublished).toLocaleDateString()}
           </time>
         </div>
       </header>
-      <div className="mdx-content">
+      <div className="prose">
         {children}
       </div>
     </article>
