@@ -15,8 +15,8 @@ importers:
         specifier: ^3.1.0
         version: 3.1.0(@types/react@18.3.18)(react@18.3.1)
       mdxld:
-        specifier: ^0.1.2
-        version: 0.1.2(web-streams-polyfill@3.3.3)
+        specifier: ^1.0.1
+        version: 1.0.1(@mdx-js/mdx@3.1.0(acorn@8.14.0))(web-streams-polyfill@3.3.3)
       remark-gfm:
         specifier: ^4.0.0
         version: 4.0.0
@@ -134,7 +134,7 @@ importers:
         specifier: ^5.0.0
         version: 5.7.2
 
-  examples/blog-posting:
+  examples/blog:
     dependencies:
       next:
         specifier: ^14.0.0
@@ -1973,8 +1973,8 @@ packages:
     resolution: {integrity: sha512-xySmf8g4fPKMeC07jXGz971EkLbWAJ83s4US2Tj9lEdnZ142UP5grN73H1Xd3HzrdbU5o9GYYP/y8F9ZSwLE9g==}
     deprecated: '`mdast` was renamed to `remark`'
 
-  mdxld@0.1.2:
-    resolution: {integrity: sha512-JV6fvdAc+QtufxjazxPsv6kxdU2sIlPN035sSa7DOsKtYIcwg+BFLzWiaXR5tMxIOwyb91Lxlx6dzy9C2HrJzw==}
+  mdxld@1.0.1:
+    resolution: {integrity: sha512-qd6+k8TTuT/q3jOnuewtaCWwp+gY++ye4l/LXmxOkGOrV+XyLf4SIYw605TEbiKO3c0tJe/Beex6p3n55n52VQ==}
 
   meow@13.2.0:
     resolution: {integrity: sha512-pxQJQzB6djGPXh08dacEloMFopsOqGVRKFPYvPOt9XDZ1HasbgDZA74CJGreSU4G3Ak7EFJGoiH2auq+yXISgA==}
@@ -2585,6 +2585,11 @@ packages:
     peerDependencies:
       '@mdx-js/mdx': ^3.0.0
 
+  remark-mdxld@0.2.0:
+    resolution: {integrity: sha512-1Bb/iVGk9UBcOkxahCgptnRGbXOVsgFGUzpm360SVf9qVVAv02gZjfY5qFPPO7TprNR6dpHdeQWA/TzpZCXFOg==}
+    peerDependencies:
+      '@mdx-js/mdx': ^3.0.0
+
   remark-parse@11.0.0:
     resolution: {integrity: sha512-FCxlKLNGknS5ba/1lmpYijMUzX2esxW5xQqjWxw2eHFfS2MSdaHVINFmhjo+qN1WhZhNimq0dZATN9pH0IDrpA==}
 
@@ -2593,6 +2598,9 @@ packages:
 
   remark-stringify@11.0.0:
     resolution: {integrity: sha512-1OSmLd3awB/t8qdoEOMazZkNsfVTeY4fTsgzcQFdXNq8ToTN4ZGwrMnlda4K6smTFKD+GRV6O48i6Z4iKgPPpw==}
+
+  remark@15.0.1:
+    resolution: {integrity: sha512-Eht5w30ruCXgFmxVUSlNWQ9iiimq07URKeFS3hNc8cUWy1llX4KDWfyEDZRycMc+znsN9Ux5/tJ/BFdgdOwA3A==}
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
@@ -5173,18 +5181,20 @@ snapshots:
 
   mdast@3.0.0: {}
 
-  mdxld@0.1.2(web-streams-polyfill@3.3.3):
+  mdxld@1.0.1(@mdx-js/mdx@3.1.0(acorn@8.14.0))(web-streams-polyfill@3.3.3):
     dependencies:
       json5: 2.2.3
       jsonld: 8.3.2(web-streams-polyfill@3.3.3)
       remark-frontmatter: 5.0.0
       remark-gfm: 4.0.0
       remark-mdx: 3.1.0
+      remark-mdxld: 0.2.0(@mdx-js/mdx@3.1.0(acorn@8.14.0))
       remark-parse: 11.0.0
       unified: 11.0.5
       unist-util-visit: 5.0.0
       yaml: 2.6.1
     transitivePeerDependencies:
+      - '@mdx-js/mdx'
       - supports-color
       - web-streams-polyfill
 
@@ -5919,6 +5929,19 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  remark-mdxld@0.2.0(@mdx-js/mdx@3.1.0(acorn@8.14.0)):
+    dependencies:
+      '@mdx-js/mdx': 3.1.0(acorn@8.14.0)
+      remark: 15.0.1
+      remark-frontmatter: 5.0.0
+      remark-gfm: 4.0.0
+      remark-mdx: 3.1.0
+      remark-stringify: 11.0.0
+      unified: 11.0.5
+      yaml: 2.6.1
+    transitivePeerDependencies:
+      - supports-color
+
   remark-parse@11.0.0:
     dependencies:
       '@types/mdast': 4.0.4
@@ -5941,6 +5964,15 @@ snapshots:
       '@types/mdast': 4.0.4
       mdast-util-to-markdown: 2.1.2
       unified: 11.0.5
+
+  remark@15.0.1:
+    dependencies:
+      '@types/mdast': 4.0.4
+      remark-parse: 11.0.0
+      remark-stringify: 11.0.0
+      unified: 11.0.5
+    transitivePeerDependencies:
+      - supports-color
 
   require-directory@2.1.1: {}
 

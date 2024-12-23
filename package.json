@@ -41,7 +41,7 @@
   "dependencies": {
     "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
-    "mdxld": "^0.1.2",
+    "mdxld": "^1.0.1",
     "remark-gfm": "^4.0.0",
     "remark-mdx-frontmatter": "^5.0.0",
     "remark-mdxld": "^0.1.0"
