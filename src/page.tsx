@@ -1,11 +1,14 @@
 import { readFileSync, readdirSync } from 'fs'
 import { join, extname } from 'path'
 import { notFound } from 'next/navigation'
-import { MDXRemote, compileMDX } from 'next-mdx-remote/rsc'
+import { MDXRemote } from 'next-mdx-remote/rsc'
 import remarkMdxld from 'remark-mdxld'
 import remarkGfm from 'remark-gfm'
 import remarkFrontmatter from 'remark-mdx-frontmatter'
-import { useMDXComponents } from './hooks'
+import dynamic from 'next/dynamic'
+
+const BlogPosting = dynamic(() => import('./components/BlogPosting'))
+const BlogLayout = dynamic(() => import('./layouts/BlogLayout'))
 
 interface MDXPageProps {
   params: {
@@ -15,14 +18,6 @@ interface MDXPageProps {
 
 interface StaticParam {
   mdxPath: string[]
-}
-
-interface Frontmatter {
-  type: string
-  title: string
-  author: string
-  datePublished: string
-  [key: string]: unknown
 }
 
 function getAllMDXFiles(dir: string): string[] {
@@ -109,41 +104,24 @@ export default async function MDXPage({ params }: MDXPageProps) {
     notFound()
   }
 
-  // First compile to get the frontmatter
-  const { frontmatter } = await compileMDX<Frontmatter>({
-    source,
-    options: {
-      parseFrontmatter: true,
-      mdxOptions: {
-        remarkPlugins: [
-          remarkGfm,
-          remarkFrontmatter,
-          remarkMdxld
-        ]
-      }
-    }
-  })
-
-  if (!frontmatter || !frontmatter.type) {
-    throw new Error('Missing required frontmatter')
-  }
-
-  const { components } = useMDXComponents(frontmatter)
-  
   return (
-    <MDXRemote
-      source={source}
-      components={components}
-      options={{
-        parseFrontmatter: true,
-        mdxOptions: {
-          remarkPlugins: [
-            remarkGfm,
-            remarkFrontmatter,
-            remarkMdxld
-          ]
-        }
-      }}
-    />
+    <BlogLayout>
+      <MDXRemote
+        source={source}
+        components={{
+          wrapper: BlogPosting
+        }}
+        options={{
+          parseFrontmatter: true,
+          mdxOptions: {
+            remarkPlugins: [
+              remarkGfm,
+              remarkFrontmatter,
+              remarkMdxld
+            ]
+          }
+        }}
+      />
+    </BlogLayout>
   )
 } 

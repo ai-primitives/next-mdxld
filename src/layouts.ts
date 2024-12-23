@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react'
+import dynamic from 'next/dynamic'
 
 export interface LayoutResolutionOptions {
   type: string
@@ -6,46 +7,27 @@ export interface LayoutResolutionOptions {
   layouts?: Record<string, string>
 }
 
+const defaultLayouts: Record<string, ComponentType> = {
+  'blog': dynamic(() => import('./layouts/BlogLayout')),
+  'https://schema.org/BlogPosting': dynamic(() => import('./layouts/BlogLayout'))
+}
+
 /**
- * Resolves a layout based on $type and $context from MDX frontmatter
+ * Resolves a layout based on type and context from MDX frontmatter
  */
 export async function resolveLayout({ type, context, layouts = {} }: LayoutResolutionOptions): Promise<ComponentType | null> {
-  // Default layout mappings for known types
-  const defaultLayouts: Record<string, string> = {
-    'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/blog/layouts/default',
-    'https://schema.org/WebSite': 'https://esm.sh/@mdxui/site/layouts/default',
-    'https://mdx.org.ai/API': 'https://esm.sh/@mdxui/api/layouts/default',
-    'https://mdx.org.ai/Agent': 'https://esm.sh/@mdxui/agent/layouts/default'
-  }
-
-  // Context-specific layout mappings
-  const contextLayouts: Record<string, Record<string, string>> = {
-    'https://mdx.org.ai/docs': {
-      'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/docs/layouts/blog',
-      'https://mdx.org.ai/API': 'https://esm.sh/@mdxui/docs/layouts/api'
-    }
-  }
-
   try {
-    // Try context-specific layout first
-    if (context && contextLayouts[context]?.[type]) {
-      const module = await import(contextLayouts[context][type])
-      return module.default || null
+    // Use default layout if available
+    if (defaultLayouts[type]) {
+      return defaultLayouts[type]
     }
 
-    // Merge user-provided layouts with defaults, giving precedence to user layouts
-    const layoutMap = {
-      ...defaultLayouts,
-      ...layouts
+    // Use custom layout if provided
+    if (layouts[type]) {
+      return dynamic(() => import(layouts[type]))
     }
 
-    // Attempt to resolve layout from map
-    const layoutUrl = layoutMap[type]
-    if (!layoutUrl) return null
-
-    // Dynamic import of layout from URL
-    const module = await import(layoutUrl)
-    return module.default || null
+    return null
   } catch (error) {
     console.error(`Failed to resolve layout for type: ${type}`, error)
     return null

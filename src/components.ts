@@ -1,10 +1,8 @@
 import type { FC } from 'react'
 import type { MDXProps } from 'mdx/types'
 import type { ComponentType } from 'react'
-import { importComponents, resolveImportUrl } from './imports.js'
+import dynamic from 'next/dynamic'
 export * from './hooks.js'
-export { DefaultLayout } from './layouts/default.js'
-export type { DefaultLayoutProps } from './layouts/default.js'
 
 export interface ComponentResolutionOptions {
   type: string
@@ -16,58 +14,28 @@ export interface ComponentsMap {
   [key: string]: FC<MDXProps>
 }
 
-const defaultComponents: Record<string, string> = {
-  'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/blog/components/BlogPosting',
-  'https://schema.org/WebSite': 'https://esm.sh/@mdxui/site/components/Website',
-  'https://mdx.org.ai/API': 'https://esm.sh/@mdxui/api/components/API',
-  'https://mdx.org.ai/Agent': 'https://esm.sh/@mdxui/agent/components/Agent'
-}
-
-// Context-specific component mappings
-const contextComponents: Record<string, Record<string, string>> = {
-  'https://mdx.org.ai/docs': {
-    'https://schema.org/BlogPosting': 'https://esm.sh/@mdxui/docs/components/BlogPosting',
-    'https://mdx.org.ai/API': 'https://esm.sh/@mdxui/docs/components/API'
-  }
+const defaultComponents: Record<string, ComponentType> = {
+  'blog': dynamic(() => import('./components/BlogPosting')),
+  'https://schema.org/BlogPosting': dynamic(() => import('./components/BlogPosting'))
 }
 
 export async function resolveComponent({ type, context, components = {} }: ComponentResolutionOptions): Promise<ComponentType | null> {
   try {
-    // Try context-specific component first
-    if (context && contextComponents[context]?.[type]) {
-      const module = await import(contextComponents[context][type])
-      return module.default || null
+    // Use default component if available
+    if (defaultComponents[type]) {
+      return defaultComponents[type]
     }
 
-    // Merge user-provided components with defaults, giving precedence to user components
-    const componentMap = {
-      ...defaultComponents,
-      ...components
+    // Use custom component if provided
+    if (components[type]) {
+      return dynamic(() => import(components[type]))
     }
 
-    // Attempt to resolve component from map
-    const componentUrl = componentMap[type]
-    if (!componentUrl) return null
-
-    // Dynamic import of component from URL
-    const module = await import(componentUrl)
-    return module.default || null
+    return null
   } catch (error) {
     console.error(`Failed to resolve component for type: ${type}`, error)
     return null
   }
-}
-
-export async function getComponents(
-  componentsUrl?: string,
-  allowedDomains?: string[]
-): Promise<ComponentsMap> {
-  if (!componentsUrl) {
-    return {}
-  }
-
-  const resolvedUrl = resolveImportUrl(componentsUrl, allowedDomains)
-  return importComponents(resolvedUrl)
 }
 
 export function mergeComponents(
