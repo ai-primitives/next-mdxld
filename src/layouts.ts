@@ -3,33 +3,23 @@ import dynamic from 'next/dynamic'
 
 export interface LayoutResolutionOptions {
   type: string
-  context?: string
-  layouts?: Record<string, string>
+  [key: string]: unknown
 }
 
-const defaultLayouts: Record<string, ComponentType> = {
-  'blog': dynamic(() => import('./layouts/BlogLayout')),
-  'https://schema.org/BlogPosting': dynamic(() => import('./layouts/BlogLayout'))
+export interface BlogLayoutProps {
+  children: React.ReactNode
 }
 
-/**
- * Resolves a layout based on type and context from MDX frontmatter
- */
-export async function resolveLayout({ type, context, layouts = {} }: LayoutResolutionOptions): Promise<ComponentType | null> {
-  try {
-    // Use default layout if available
-    if (defaultLayouts[type]) {
-      return defaultLayouts[type]
-    }
+const layouts: Record<string, ComponentType<BlogLayoutProps>> = {
+  'https://schema.org/Blog': dynamic(() => import('./layouts/BlogLayout')),
+  'blog': dynamic(() => import('./layouts/BlogLayout'))
+}
 
-    // Use custom layout if provided
-    if (layouts[type]) {
-      return dynamic(() => import(layouts[type]))
-    }
-
-    return null
-  } catch (error) {
-    console.error(`Failed to resolve layout for type: ${type}`, error)
-    return null
+export function resolveLayout(options: LayoutResolutionOptions): ComponentType<BlogLayoutProps> {
+  const { type } = options
+  const layout = layouts[type]
+  if (!layout) {
+    throw new Error(`No layout found for type: ${type}`)
   }
+  return layout
 }

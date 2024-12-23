@@ -1,127 +1,73 @@
-import { readFileSync, readdirSync } from 'fs'
-import { join, extname } from 'path'
-import { notFound } from 'next/navigation'
-import { MDXRemote } from 'next-mdx-remote/rsc'
-import remarkMdxld from 'remark-mdxld'
+import React from 'react'
+import type { ComponentType } from 'react'
+import { join } from 'path'
+import { readFile } from 'fs/promises'
+import { compileMDX } from 'next-mdx-remote/rsc'
 import remarkGfm from 'remark-gfm'
-import remarkFrontmatter from 'remark-mdx-frontmatter'
-import dynamic from 'next/dynamic'
+import remarkMdxld from 'remark-mdxld'
+import { resolveComponent } from './components'
+import { resolveLayout } from './layouts'
 
-const BlogPosting = dynamic(() => import('./components/BlogPosting'))
-const BlogLayout = dynamic(() => import('./layouts/BlogLayout'))
+export interface Frontmatter {
+  type: string
+  title: string
+  author: string
+  datePublished: string
+  [key: string]: unknown
+}
 
-interface MDXPageProps {
+export interface MDXPageProps {
   params: {
     mdxPath?: string[]
   }
 }
 
-interface StaticParam {
-  mdxPath: string[]
-}
+export type MDXPageComponent = ComponentType<MDXPageProps>
 
-function getAllMDXFiles(dir: string): string[] {
-  const files: string[] = []
-  
-  try {
-    const entries = readdirSync(dir, { withFileTypes: true })
-    
-    for (const entry of entries) {
-      const fullPath = join(dir, entry.name)
-      if (entry.isDirectory()) {
-        files.push(...getAllMDXFiles(fullPath))
-      } else if (extname(entry.name) === '.mdx') {
-        files.push(fullPath)
-      }
-    }
-  } catch (error) {
-    console.error('Error reading directory:', error)
-  }
-  
-  return files
-}
+export async function createMDXPage(options: {
+  contentDir: string
+  components?: Record<string, ComponentType>
+}): Promise<MDXPageComponent> {
+  const { contentDir, components = {} } = options
 
-async function getMDXSource(mdxPath: string[] = []): Promise<string | null> {
-  const contentDir = join(process.cwd(), 'content')
-  let fullPath: string
-  
-  if (mdxPath.length === 0) {
-    // Try to find an index.mdx file
-    fullPath = join(contentDir, 'index.mdx')
+  async function getMDXSource(params: { mdxPath?: string[] }) {
     try {
-      return readFileSync(fullPath, 'utf-8')
-    } catch (error) {
-      // If no index.mdx exists, try to use the first MDX file
-      const files = getAllMDXFiles(contentDir)
-      if (files.length > 0) {
-        return readFileSync(files[0], 'utf-8')
-      }
-      return null
-    }
-  }
-  
-  // Handle specific file paths
-  const contentPath = join(contentDir, mdxPath.join('/'))
-  fullPath = contentPath.endsWith('.mdx') ? contentPath : `${contentPath}.mdx`
-  
-  try {
-    return readFileSync(fullPath, 'utf-8')
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-      return null
-    }
-    console.error('Error loading MDX:', error)
-    return null
-  }
-}
+      const mdxPath = params.mdxPath || []
+      const filePath = join(contentDir, ...mdxPath) + '.mdx'
+      const source = await readFile(filePath, 'utf-8')
 
-export async function generateStaticParams(): Promise<StaticParam[]> {
-  const contentDir = join(process.cwd(), 'content')
-  const mdxFiles = getAllMDXFiles(contentDir)
-  
-  // Add root path
-  const paths: StaticParam[] = [{ mdxPath: [] }]
-  
-  // Add file paths
-  paths.push(...mdxFiles.map(file => ({
-    mdxPath: file
-      .replace(contentDir, '')
-      .replace(/^\//, '')
-      .replace(/\.mdx$/, '')
-      .split('/')
-      .filter(Boolean)
-  })))
-  
-  return paths
-}
-
-export const dynamicParams = true
-
-export default async function MDXPage({ params }: MDXPageProps) {
-  const source = await getMDXSource(params.mdxPath)
-  
-  if (!source) {
-    notFound()
-  }
-
-  return (
-    <BlogLayout>
-      <MDXRemote
-        source={source}
-        components={{
-          wrapper: BlogPosting
-        }}
-        options={{
+      const { content, frontmatter } = await compileMDX<Frontmatter>({
+        source,
+        components,
+        options: {
           parseFrontmatter: true,
           mdxOptions: {
             remarkPlugins: [
               remarkGfm,
-              remarkFrontmatter,
-              remarkMdxld
+              remarkMdxld as any
             ]
           }
-        }}
-      />
-    </BlogLayout>
-  )
+        }
+      })
+
+      const Component = resolveComponent({ type: frontmatter.type })
+      const Layout = resolveLayout({ type: frontmatter.type })
+
+      return (
+        <Layout>
+          <Component frontmatter={frontmatter}>
+            {content}
+          </Component>
+        </Layout>
+      )
+    } catch (error) {
+      console.error('Failed to get MDX source:', error)
+      return null
+    }
+  }
+
+  return async function MDXPage({ params }: MDXPageProps) {
+    const content = await getMDXSource(params)
+    return content
+  }
 } 

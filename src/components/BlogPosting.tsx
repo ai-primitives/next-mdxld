@@ -1,13 +1,14 @@
 import React from 'react'
-import type { MDXProps } from 'mdx/types'
+import { Frontmatter } from '../page'
 
-export interface BlogPostingProps extends MDXProps {
-  title: string
-  author: string
-  datePublished: string
+export interface BlogPostingProps {
+  frontmatter: Frontmatter
+  children: React.ReactNode
 }
 
-export default function BlogPosting({ title, author, datePublished, children }: BlogPostingProps) {
+export default function BlogPosting({ frontmatter, children }: BlogPostingProps) {
+  const { title, author, datePublished } = frontmatter
+
   return (
     <article className="prose lg:prose-xl mx-auto px-4">
       <header className="mb-8">

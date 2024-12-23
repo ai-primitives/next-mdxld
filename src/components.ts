@@ -1,49 +1,27 @@
-import type { FC } from 'react'
-import type { MDXProps } from 'mdx/types'
 import type { ComponentType } from 'react'
+import type { Frontmatter } from './page'
 import dynamic from 'next/dynamic'
-export * from './hooks.js'
 
 export interface ComponentResolutionOptions {
   type: string
-  context?: string
-  components?: Record<string, string>
+  [key: string]: unknown
 }
 
-export interface ComponentsMap {
-  [key: string]: FC<MDXProps>
+export interface BlogPostingProps {
+  frontmatter: Frontmatter
+  children: React.ReactNode
 }
 
-const defaultComponents: Record<string, ComponentType> = {
-  'blog': dynamic(() => import('./components/BlogPosting')),
-  'https://schema.org/BlogPosting': dynamic(() => import('./components/BlogPosting'))
+const components: Record<string, ComponentType<BlogPostingProps>> = {
+  'https://schema.org/BlogPosting': dynamic(() => import('./components/BlogPosting')),
+  'https://schema.org/Article': dynamic(() => import('./components/BlogPosting'))
 }
 
-export async function resolveComponent({ type, context, components = {} }: ComponentResolutionOptions): Promise<ComponentType | null> {
-  try {
-    // Use default component if available
-    if (defaultComponents[type]) {
-      return defaultComponents[type]
-    }
-
-    // Use custom component if provided
-    if (components[type]) {
-      return dynamic(() => import(components[type]))
-    }
-
-    return null
-  } catch (error) {
-    console.error(`Failed to resolve component for type: ${type}`, error)
-    return null
+export function resolveComponent(options: ComponentResolutionOptions): ComponentType<BlogPostingProps> {
+  const { type } = options
+  const component = components[type]
+  if (!component) {
+    throw new Error(`No component found for type: ${type}`)
   }
-}
-
-export function mergeComponents(
-  base: ComponentsMap,
-  override: ComponentsMap
-): ComponentsMap {
-  return {
-    ...base,
-    ...override
-  }
+  return component
 }

@@ -6,8 +6,10 @@ import remarkGfm from 'remark-gfm'
 import { resolveComponent, type ComponentResolutionOptions } from './components.js'
 import { resolveLayout, type LayoutResolutionOptions } from './layouts.js'
 import { resolveURLImports, createImportAliases, type MDXLDConfig } from './config.js'
-import { useMDXComponents } from './hooks.js'
-import { default as MDXPage } from './page.js'
+import { useMDX } from './hooks.jsx'
+import { createMDXPage, type Frontmatter, type MDXPageComponent } from './page.js'
+import { default as BlogLayout } from './layouts/BlogLayout.js'
+import { default as BlogPosting } from './components/BlogPosting.js'
 
 const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
   return {
@@ -60,5 +62,6 @@ const withMdxld = (nextConfig: NextConfig & MDXLDConfig = {}) => {
 }
 
 export default withMdxld
-export { resolveComponent, resolveLayout, useMDXComponents, MDXPage }
-export type { MDXLDConfig, ComponentResolutionOptions, LayoutResolutionOptions }
+export { resolveComponent, resolveLayout, useMDX, createMDXPage }
+export type { MDXLDConfig, ComponentResolutionOptions, LayoutResolutionOptions, Frontmatter, MDXPageComponent }
+export { BlogLayout, BlogPosting }
