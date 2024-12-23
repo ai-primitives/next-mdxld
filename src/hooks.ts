@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react'
 import type { ComponentType } from 'react'
 import { resolveComponent } from './components.js'
