@@ -1,18 +1,12 @@
-import { createMDXPage, mapFrontmatterToMetadata } from 'next-mdxld'
+import { createMDXPage, generateMetadata as generateMDXMetadata } from 'next-mdxld'
 import { join } from 'path'
-import type { Metadata } from 'next'
 
+const contentDir = join(process.cwd(), 'content')
 const mdxPage = createMDXPage({
-  contentDir: join(process.cwd(), 'content')
+  contentDir
 })
 
-export const generateMetadata = async ({ params }): Promise<Metadata> => {
-  const { getMDXData } = mdxPage
-  const data = await getMDXData(params)
-  if (!data?.frontmatter) {
-    return {}
-  }
-  return mapFrontmatterToMetadata(data.frontmatter)
-}
+// Configure generateMetadata with contentDir
+export const generateMetadata = ({ params }) => generateMDXMetadata({ params }, contentDir)
 
 export default mdxPage

@@ -1,5 +1,6 @@
 import React from 'react'
 import type { ComponentType } from 'react'
+import type { Metadata } from 'next'
 import { join } from 'path'
 import { readFile } from 'fs/promises'
 import { compileMDX } from 'next-mdx-remote/rsc'
@@ -17,6 +18,12 @@ export interface Frontmatter {
   datePublished: string
   description?: string
   [key: string]: unknown
+}
+
+export interface MDXPageParams {
+  params: {
+    mdxPath?: string[]
+  }
 }
 
 export function mapFrontmatterToMetadata(frontmatter: Frontmatter): Record<string, any> {
@@ -71,42 +78,50 @@ export interface MDXPageProps {
 
 export type MDXPageComponent = ComponentType<MDXPageProps>
 
+export async function getMDXData(contentDir: string, params: { mdxPath?: string[] }, components: Record<string, ComponentType> = {}) {
+  try {
+    const mdxPath = params.mdxPath || []
+    const filePath = join(contentDir, ...mdxPath) + '.mdx'
+    const source = await readFile(filePath, 'utf-8')
+
+    const { content, frontmatter } = await compileMDX<Frontmatter>({
+      source,
+      components,
+      options: {
+        parseFrontmatter: true,
+        mdxOptions: {
+          remarkPlugins: [
+            remarkFrontmatter,
+            remarkGfm,
+            remarkMdxld
+          ]
+        }
+      }
+    })
+
+    return { content, frontmatter }
+  } catch (error) {
+    console.error('Failed to get MDX data:', error)
+    return null
+  }
+}
+
+export async function generateMetadata({ params }: MDXPageParams, contentDir: string): Promise<Metadata> {
+  const data = await getMDXData(contentDir, params)
+  if (!data?.frontmatter) {
+    return {}
+  }
+  return mapFrontmatterToMetadata(data.frontmatter)
+}
+
 export async function createMDXPage(options: {
   contentDir: string
   components?: Record<string, ComponentType>
 }): Promise<MDXPageComponent> {
   const { contentDir, components = {} } = options
 
-  async function getMDXData(params: { mdxPath?: string[] }) {
-    try {
-      const mdxPath = params.mdxPath || []
-      const filePath = join(contentDir, ...mdxPath) + '.mdx'
-      const source = await readFile(filePath, 'utf-8')
-
-      const { content, frontmatter } = await compileMDX<Frontmatter>({
-        source,
-        components,
-        options: {
-          parseFrontmatter: true,
-          mdxOptions: {
-            remarkPlugins: [
-              remarkFrontmatter,
-              remarkGfm,
-              remarkMdxld
-            ]
-          }
-        }
-      })
-
-      return { content, frontmatter }
-    } catch (error) {
-      console.error('Failed to get MDX data:', error)
-      return null
-    }
-  }
-
   async function getMDXSource(params: { mdxPath?: string[] }) {
-    const data = await getMDXData(params)
+    const data = await getMDXData(contentDir, params, components)
     if (!data) return null
     
     return (
@@ -120,4 +135,4 @@ export async function createMDXPage(options: {
     const content = await getMDXSource(params)
     return content
   }
-}       
+}          
