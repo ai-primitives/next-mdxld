@@ -1,6 +1,12 @@
-import { createMDXPage } from 'next-mdxld'
+import { createMDXPage, generateMetadata as generateMDXMetadata } from 'next-mdxld'
 import { join } from 'path'
 
-export default createMDXPage({
-  contentDir: join(process.cwd(), 'content')
+const contentDir = join(process.cwd(), 'content')
+const mdxPage = createMDXPage({
+  contentDir
 })
+
+// Configure generateMetadata with contentDir
+export const generateMetadata = ({ params }) => generateMDXMetadata({ params }, contentDir)
+
+export default mdxPage
