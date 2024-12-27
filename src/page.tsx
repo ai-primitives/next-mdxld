@@ -15,7 +15,52 @@ export interface Frontmatter {
   title: string
   author: string
   datePublished: string
+  description?: string
   [key: string]: unknown
+}
+
+export function mapFrontmatterToMetadata(frontmatter: Frontmatter): Record<string, any> {
+  const metadata: Record<string, any> = {}
+
+  // Basic metadata
+  if (frontmatter.title) {
+    metadata.title = frontmatter.title
+  }
+  if (frontmatter.description) {
+    metadata.description = frontmatter.description
+  }
+
+  // OpenGraph metadata
+  const openGraph: Record<string, any> = {}
+  if (frontmatter.title) {
+    openGraph.title = frontmatter.title
+  }
+  if (frontmatter.description) {
+    openGraph.description = frontmatter.description
+  }
+  if (frontmatter.datePublished) {
+    openGraph.article = {
+      ...openGraph.article,
+      publishedTime: frontmatter.datePublished
+    }
+  }
+  if (Object.keys(openGraph).length > 0) {
+    metadata.openGraph = openGraph
+  }
+
+  // Twitter metadata (commonly used alongside OpenGraph)
+  const twitter: Record<string, any> = {}
+  if (frontmatter.title) {
+    twitter.title = frontmatter.title
+  }
+  if (frontmatter.description) {
+    twitter.description = frontmatter.description
+  }
+  if (Object.keys(twitter).length > 0) {
+    metadata.twitter = twitter
+  }
+
+  return metadata
 }
 
 export interface MDXPageProps {
@@ -32,7 +77,7 @@ export async function createMDXPage(options: {
 }): Promise<MDXPageComponent> {
   const { contentDir, components = {} } = options
 
-  async function getMDXSource(params: { mdxPath?: string[] }) {
+  async function getMDXData(params: { mdxPath?: string[] }) {
     try {
       const mdxPath = params.mdxPath || []
       const filePath = join(contentDir, ...mdxPath) + '.mdx'
@@ -53,19 +98,26 @@ export async function createMDXPage(options: {
         }
       })
 
-      return (
-        <MDXRenderer frontmatter={frontmatter}>
-          {content}
-        </MDXRenderer>
-      )
+      return { content, frontmatter }
     } catch (error) {
-      console.error('Failed to get MDX source:', error)
+      console.error('Failed to get MDX data:', error)
       return null
     }
+  }
+
+  async function getMDXSource(params: { mdxPath?: string[] }) {
+    const data = await getMDXData(params)
+    if (!data) return null
+    
+    return (
+      <MDXRenderer frontmatter={data.frontmatter}>
+        {data.content}
+      </MDXRenderer>
+    )
   }
 
   return async function MDXPage({ params }: MDXPageProps) {
     const content = await getMDXSource(params)
     return content
   }
-} 
+}       
